@@ -1,0 +1,22 @@
+/* Setting font-family for whole app */
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+}
+
+/* For route change transitions */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+/* For google material-design icons */
+.material-icons {
+  cursor: pointer;
+}
+.material-icons.selected {
+  cursor: default;
+  color: lightgray;
+}
