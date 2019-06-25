@@ -69,7 +69,8 @@ module.exports = {
   },
 
   env: {
-    FB_API_KEY: 'AIzaSyC7ItGWr8uZpRAHrGC8_qztVg8QxMulzZE'
+    FB_API_KEY: 'AIzaSyC7ItGWr8uZpRAHrGC8_qztVg8QxMulzZE',
+    DATABASE_URL: 'postgres://localhost:5432/blog'
   },
 
   router: {

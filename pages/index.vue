@@ -34,9 +34,16 @@
 // import PostList from '~/components/posts/PostList'
 
 export default {
+  created() {
+    this.$axios.get('http://localhost:3000/api/posts')
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err=>console.log(err))
+  },
   data () {
     return {
-      isAdmin: false
+      isAdmin: false,
     }
   },
   computed: {
