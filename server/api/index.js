@@ -8,9 +8,11 @@ router.post('/track-data', (req, res) => {
   console.log('stored data', req.body.data)
   res.status(200).json({message: 'Success'})
 })
-
+// Users
 router.get('/users', db.getUsers)
+// Posts
 router.get('/posts', db.getPosts)
+router.post('/posts', db.addPost)
 
 module.exports = {
   path: '/api',

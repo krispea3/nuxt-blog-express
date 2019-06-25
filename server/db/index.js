@@ -14,7 +14,7 @@ const getUsers = (req, res, next) => {
     .then(data => {
       res.status(200).json({
         status: 'success',
-        data: data,
+        users: data,
         message: 'Retrieved ALL users'
       })
     })
@@ -28,7 +28,7 @@ const getPosts = (req, res, next) => {
     .then(data => {
       res.status(200).json({
         status: 'success',
-        data: data,
+        posts: data,
         message: 'Retrieved ALL posts'
       })
     })
@@ -37,7 +37,25 @@ const getPosts = (req, res, next) => {
     });
 }
 
+const addPost = (req, res, next) => {
+  console.log(req.body)
+  db.none('INSERT INTO posts(title, description, user_id) VALUES(${title}, ${description}, 1)', req.body)
+    .then(() => {
+      console.log('Row inserted')
+      res.status(200).json({
+        status: 'success',
+        message: 'Post added'
+      })
+    })
+    .catch(error => {
+      console.log('Error insert row')
+      return next(error)
+    });
+}
+
+
 module.exports = {
   getUsers,
-  getPosts
+  getPosts,
+  addPost
 }
