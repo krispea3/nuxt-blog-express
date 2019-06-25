@@ -166,20 +166,20 @@ export const actions = {
           commit('setError', '') 
           commit('login', user)
           dispatch('setAutologout', data.expiresIn * 1000)
-              // Example how we could write our own express-server DB
-              // Write data to our Express server api track-data
-              // return (
-              //   this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
-              //     .then(res => {
-              //       console.log(res)
-              //       if (res.status < 400) {
-              //         console.log('Success')
-              //       } else {
-              //         console.log('Something went wrong')
-              //       }
-              //     })
-              //     .catch(err => console.log(err))
-          // )
+          // Example how we could write our own express-server DB
+          // Write data to our Express server api track-data
+          return (
+            this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
+              .then(res => {
+                console.log(res)
+                if (res.status < 400) {
+                  console.log('Success')
+                } else {
+                  console.log('Something went wrong')
+                }
+              })
+              .catch(err => console.log(err))
+      )
         })
         .catch(err => {
           commit('setError', 'Cannot login the user, try again later')
@@ -224,20 +224,20 @@ export const actions = {
                 commit('login', user)
                 commit('setError', '')
                 dispatch('setAutologout', wrkExpiresIn * 1000)
-                      // Example how we could write our own express-server DB
-                      // Write data to our Express server API track-data
-                      // return (
-                      //   this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
-                      //     .then(res => {
-                      //       console.log(res)
-                      //       if (res.status < 400) {
-                      //         console.log('Success')
-                      //       } else {
-                      //         console.log('Something went wrong')
-                      //       }
-                      //     })
-                      //     .catch(err => console.log(err))
-                      // )
+                // Example how we could write our own express-server DB
+                // Write data to our Express server API track-data
+                return (
+                  this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
+                    .then(res => {
+                      console.log(res)
+                      if (res.status < 400) {
+                        console.log('Success')
+                      } else {
+                        console.log('Something went wrong')
+                      }
+                    })
+                    .catch(err => console.log(err))
+                )
               })
               .catch(err => console.log(err))
           )

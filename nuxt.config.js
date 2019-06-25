@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser')
 
 module.exports = {
   mode: 'universal',
@@ -79,5 +80,12 @@ module.exports = {
     name: 'fade',
     mode: 'out-in'
   },
+
+  serverMiddleware: [
+    // will parse the req.body in node Express
+    bodyParser.json(),
+    // Path to the server. Will look for index.js in this path
+    '~/server/api'
+  ]
 
 }
