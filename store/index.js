@@ -128,124 +128,153 @@ export const actions = {
     )
   },
   register ({ commit, dispatch }, formData) {
+    // Write user in postgres database
     return (
-      this.$axios.$post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' + process.env.FB_API_KEY, {
-        email: formData.email, 
-        password: formData.password, 
-        returnSecureToken: true
-      })
-        .then( data => {
-          // Write cookies
-          const now = new Date()
-          const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
-          this.$cookies.set('token', data.idToken, {
-            path: '/',
-            expires: expirationDate
-          })
-          this.$cookies.set('user', formData.email, {
-            path: '/',
-            expires: expirationDate
-          })
-          this.$cookies.set('expirationDate', expirationDate, {
-            path: '/',
-            expires: expirationDate
-          })
-          // Write user record to firebase database
-          const userData = formData
-          delete userData['password']
-          this.$axios.$post('/users.json' + '?auth=' + data.idToken, userData)
-            .then(data => {
-            })
-            .catch(err => console.log(err))
-          const user = {
-            firstName: formData.firstName,
-            surName: formData.surName,
-            email: formData.email,
-            idToken: data.idToken
-          }
-          commit('setError', '') 
-          commit('login', user)
-          dispatch('setAutologout', data.expiresIn * 1000)
-          // Example how we could write our own express-server DB
-          // Write data to our Express server api track-data
-          return (
-            this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
-              .then(res => {
-                console.log(res)
-                if (res.status < 400) {
-                  console.log('Success')
-                } else {
-                  console.log('Something went wrong')
-                }
-              })
-              .catch(err => console.log(err))
-      )
+      this.$axios.$post('http://localhost:3000/api/user', formData)
+        .then(data => {
+          console.log(data)
         })
         .catch(err => {
-          commit('setError', 'Cannot login the user, try again later')
+          if (err.response.status === 403) {
+            console.log('email already in database')
+          }
         })
     )
+    // return (
+    //   this.$axios.$post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' + process.env.FB_API_KEY, {
+    //     email: formData.email, 
+    //     password: formData.password, 
+    //     returnSecureToken: true
+    //   })
+    //     .then( data => {
+    //       // Write cookies
+    //       const now = new Date()
+    //       const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
+    //       this.$cookies.set('token', data.idToken, {
+    //         path: '/',
+    //         expires: expirationDate
+    //       })
+    //       this.$cookies.set('user', formData.email, {
+    //         path: '/',
+    //         expires: expirationDate
+    //       })
+    //       this.$cookies.set('expirationDate', expirationDate, {
+    //         path: '/',
+    //         expires: expirationDate
+    //       })
+    //       // Write user record to firebase database
+    //       const userData = formData
+    //       delete userData['password']
+    //       this.$axios.$post('/users.json' + '?auth=' + data.idToken, userData)
+    //         .then(data => {
+    //         })
+    //         .catch(err => console.log(err))
+    //       const user = {
+    //         firstName: formData.firstName,
+    //         surName: formData.surName,
+    //         email: formData.email,
+    //         idToken: data.idToken
+    //       }
+    //       commit('setError', '') 
+    //       commit('login', user)
+    //       dispatch('setAutologout', data.expiresIn * 1000)
+    //       // Example how we could write our own express-server DB
+    //       // Write data to our Express server api track-data
+    //       return (
+    //         this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
+    //           .then(res => {
+    //             console.log(res)
+    //             if (res.status < 400) {
+    //               console.log('Success')
+    //             } else {
+    //               console.log('Something went wrong')
+    //             }
+    //           })
+    //           .catch(err => console.log(err))
+    //   )
+    //     })
+    //     .catch(err => {
+    //       commit('setError', 'Cannot login the user, try again later')
+    //     })
+    // )
   },
   login ({ commit, dispatch }, formData) {
+    // Login user through Postgres DB
     return (
-      this.$axios.$post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + process.env.FB_API_KEY, {
-        email: formData.email, 
-        password: formData.password, 
-        returnSecureToken: true
-      })
-        .then( data => {
-          // Set cookies
-          const now = new Date()
-          const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
-          this.$cookies.set('token', data.idToken, {
-            path: '/',
-            expires: expirationDate
-          })
-          this.$cookies.set('user', formData.email, {
-            path: '/',
-            expires: expirationDate
-          })
-          this.$cookies.set('expirationDate', expirationDate, {
-            path: '/',
-            expires: expirationDate
-          })
-          commit('setError', '')
-          // Read user data on firebase
-          const wrkIdToken = data.idToken
-          const wrkExpiresIn = data.expiresIn
-          let user = {}
-          return (
-            this.$axios.$get('/users.json?orderBy="email"&equalTo="' + formData.email + '"')
-              .then(data => {
-                const id = Object.keys(data)
-                user = data[id]
-                user.id = id[0]
-                user.idToken = wrkIdToken
-                commit('login', user)
-                commit('setError', '')
-                dispatch('setAutologout', wrkExpiresIn * 1000)
-                // Example how we could write our own express-server DB
-                // Write data to our Express server API track-data
-                return (
-                  this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
-                    .then(res => {
-                      console.log(res)
-                      if (res.status < 400) {
-                        console.log('Success')
-                      } else {
-                        console.log('Something went wrong')
-                      }
-                    })
-                    .catch(err => console.log(err))
-                )
-              })
-              .catch(err => console.log(err))
-          )
+      this.$axios.$get('http://localhost:3000/api/user/', {headers: { 'email': formData.email, 'password': formData.password }})
+        .then(data => {
+          console.log(data)
         })
         .catch(err => {
-          commit('setError', 'Invalid email or password')
+          // Invalid email
+          if (err.response.status === 500) {
+            console.log('invalid email')
+          // Invalid password
+          } else if (err.response.status === 401) {
+            console.log('invalid password')
+          }
+          console.log(err.response)
         })
     )
+    // return (
+    //   this.$axios.$post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + process.env.FB_API_KEY, {
+    //     email: formData.email, 
+    //     password: formData.password, 
+    //     returnSecureToken: true
+    //   })
+    //     .then( data => {
+    //       // Set cookies
+    //       const now = new Date()
+    //       const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
+    //       this.$cookies.set('token', data.idToken, {
+    //         path: '/',
+    //         expires: expirationDate
+    //       })
+    //       this.$cookies.set('user', formData.email, {
+    //         path: '/',
+    //         expires: expirationDate
+    //       })
+    //       this.$cookies.set('expirationDate', expirationDate, {
+    //         path: '/',
+    //         expires: expirationDate
+    //       })
+    //       commit('setError', '')
+    //       // Read user data on firebase
+    //       const wrkIdToken = data.idToken
+    //       const wrkExpiresIn = data.expiresIn
+    //       let user = {}
+    //       return (
+    //         this.$axios.$get('/users.json?orderBy="email"&equalTo="' + formData.email + '"')
+    //           .then(data => {
+    //             const id = Object.keys(data)
+    //             user = data[id]
+    //             user.id = id[0]
+    //             user.idToken = wrkIdToken
+    //             commit('login', user)
+    //             commit('setError', '')
+    //             dispatch('setAutologout', wrkExpiresIn * 1000)
+    //             // Example how we could write our own express-server DB
+    //             // Write data to our Express server API track-data
+    //             return (
+    //               this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
+    //                 .then(res => {
+    //                   console.log(res)
+    //                   if (res.status < 400) {
+    //                     console.log('Success')
+    //                   } else {
+    //                     console.log('Something went wrong')
+    //                   }
+    //                 })
+    //                 .catch(err => console.log(err))
+    //             )
+    //           })
+    //           .catch(err => console.log(err))
+    //       )
+    //     })
+    //     .catch(err => {
+    //       commit('setError', 'Invalid email or password')
+    //     })
+    // )
   },
   updateUser ({ commit }, form) {
     let user = {...form}

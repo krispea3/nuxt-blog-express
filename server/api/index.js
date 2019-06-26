@@ -10,6 +10,8 @@ router.post('/track-data', (req, res) => {
 })
 // Users
 router.get('/users', db.getUsers)
+router.get('/user', db.getUser)
+router.post('/user', db.addUser)
 // Posts
 router.get('/posts', db.getPosts)
 router.post('/posts', db.addPost)
