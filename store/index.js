@@ -132,10 +132,14 @@ export const actions = {
     return (
       this.$axios.$post('http://localhost:3000/api/user', formData)
         .then(data => {
-          return console.log(data)
+          delete formData['password']
+          commit('setError', '') 
+          commit('login', formData)
+          console.log(data)
         })
         .catch(err => {
-          return console.log(err.response.data)
+          commit('setError', err.response.data)
+          console.log(err.response.data)
         })
     )
     // return (
@@ -201,15 +205,18 @@ export const actions = {
     return (
       this.$axios.$get('http://localhost:3000/api/user/', {headers: { 'email': formData.email, 'password': formData.password }})
         .then(data => {
-          return console.log(data)
+          commit('setError', "")
+          commit('login', data.user)
+          const type = typeof data.user
+          console.log(data.user, type)
         })
         .catch(err => {
           // Invalid email
           if (err.response.status === 500) {
-            return console.log('invalid email')
+            commit('setError', 'Invalid email')
           // // Invalid password
           } else if (err.response.status === 401) {
-            return console.log('invalid password')
+            commit('setError', 'Invalid password')
           }
         })
     )
