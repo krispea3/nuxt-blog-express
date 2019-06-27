@@ -33,6 +33,8 @@ const getUser = (req, res, next) => {
         return res.send('Invalid password')
       } else {
         delete data['password']
+        // Pseudo token. HAS TO BE CHANGED
+        data.idToken = '123456'
         return (
           res.status(202).json({
             status: 'success',

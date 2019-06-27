@@ -132,7 +132,30 @@ export const actions = {
     return (
       this.$axios.$post('http://localhost:3000/api/user', formData)
         .then(data => {
+          // Write cookies
+          const now = new Date()
+          const expirationDate = new Date(now.getTime() + 3600 * 1000)
+          // this.$cookies.set('token', data.idToken, {
+          //   path: '/',
+          //   expires: expirationDate
+          // })
+          // Dummy token for testing purpose. HAS TO BE CHANGED!!!!!!!!!!!
+          this.$cookies.set('token', '123456', {
+            path: '/',
+            expires: expirationDate
+          })
+          this.$cookies.set('user', formData.email, {
+            path: '/',
+            expires: expirationDate
+          })
+          this.$cookies.set('expirationDate', expirationDate, {
+            path: '/',
+            expires: expirationDate
+          })
+
           delete formData['password']
+          // Pseudo Token. HAS TO BE CHANGED
+          formData.idToken = '123456'
           commit('setError', '') 
           commit('login', formData)
           console.log(data)
@@ -205,6 +228,22 @@ export const actions = {
     return (
       this.$axios.$get('http://localhost:3000/api/user/', {headers: { 'email': formData.email, 'password': formData.password }})
         .then(data => {
+          // Set Cookies. Token is pseudo token. HAS TO BE CHANGED
+          const now = new Date()
+          const expirationDate = new Date(now.getTime() + 3600 * 1000)
+
+          this.$cookies.set('token', '123456', {
+            path: '/',
+            expires: expirationDate
+          })
+          this.$cookies.set('user', formData.email, {
+            path: '/',
+            expires: expirationDate
+          })
+          this.$cookies.set('expirationDate', expirationDate, {
+            path: '/',
+            expires: expirationDate
+          })
           commit('setError', "")
           commit('login', data.user)
           const type = typeof data.user
