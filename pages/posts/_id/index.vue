@@ -16,17 +16,29 @@ export default {
   //   this.$store.dispatch('setPost', this.$route.params.id)
   // },
   asyncData (context) {
+    console.log(context.params)
     return (
-      context.app.$axios.$get('/post/' + context.params.id + '.json')
+      context.app.$axios.$get('http://localhost:3000/api/post/' + context.params.id)
         .then(data => {
           return {
-            loadedPost: data
+            loadedPost: data.post
           }
         })
         .catch(err => {
-          return context.error(err)
+          return console.log(err)
         })
     )
+    // return (
+    //   context.app.$axios.$get('/post/' + context.params.id + '.json')
+    //     .then(data => {
+    //       return {
+    //         loadedPost: data
+    //       }
+    //     })
+    //     .catch(err => {
+    //       return context.error(err)
+    //     })
+    // )
   },
   components: {
     PostDetail

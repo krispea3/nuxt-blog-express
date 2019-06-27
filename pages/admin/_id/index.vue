@@ -13,15 +13,27 @@ import PostForm from '~/components/posts/PostForm'
 
 export default {
   asyncData (context) {
+    console.log(context.params)
     return (
-      context.app.$axios.$get('/post/' + context.params.id + '.json')
+      context.app.$axios.$get('http://localhost:3000/api/post/' + context.params.id)
         .then(data => {
           return {
-            loadedPost: data
+            loadedPost: data.post
           }
         })
-        .catch(err => context.error(err))
+        .catch(err => {
+          return console.log(err)
+        })
     )
+    // return (
+    //   context.app.$axios.$get('/post/' + context.params.id + '.json')
+    //     .then(data => {
+    //       return {
+    //         loadedPost: data
+    //       }
+    //     })
+    //     .catch(err => context.error(err))
+    // )
   },
   computed: {
     error () {
@@ -33,7 +45,8 @@ export default {
   },
   methods: {
     onSave (formData) {
-      this.$store.dispatch('updatePost', {formData: formData, id: this.$route.params.id})
+      formData._id = +this.$route.params.id
+      this.$store.dispatch('updatePost', formData)
       // The updatePost action returns the axios promise. So we will enter .then when axios wrote the data to firebase
         .then(() => {
           if (!this.error) {

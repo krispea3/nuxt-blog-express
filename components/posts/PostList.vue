@@ -11,7 +11,7 @@
       </b-row>
       <b-row no-gutters align-h="center">
         <b-card-group deck>
-        <div  v-for="post in filteredPosts" :key="post.id">
+        <div  v-for="post in filteredPosts" :key="post._id">
           <PostDetail
             :isPreview="true" 
             :isAdmin="isAdmin" 
@@ -31,7 +31,7 @@
             @displayType="setDisplayType"/>
         </b-col>
       </b-row>
-      <div  v-for="post in filteredPosts" :key="post.id">
+      <div  v-for="post in filteredPosts" :key="post._id">
         <b-row no-gutters align-h="center">
           <b-col cols="10">
           <PostDetail

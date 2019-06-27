@@ -16,7 +16,9 @@ router.post('/user', db.addUser)
 router.put('/user', db.updateUser)
 // Posts
 router.get('/posts', db.getPosts)
+router.get('/post/:id', db.getPost)
 router.post('/post', db.addPost)
+router.put('/post/:id', db.updatePost)
 
 module.exports = {
   path: '/api',

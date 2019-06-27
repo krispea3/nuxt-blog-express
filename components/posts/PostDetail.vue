@@ -29,15 +29,15 @@
         </b-button>
 
         <b-button v-if="!isAdmin & isPreview"
-          @click="postDetail(post.id)" 
+          @click="postDetail(post._id)" 
           variant="primary"
           size="sm">
             View
-          <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
+          <b-spinner v-if="isLoading.includes(post._id)" small></b-spinner>
         </b-button>
 
         <b-button v-if="isAdmin"
-          @click="postEdit(post.id)" 
+          @click="postEdit(post._id)" 
           variant="success"
           size="sm">
             Edit

@@ -13,9 +13,9 @@ export const mutations = {
   addPostToPosts (state, payload) {
     state.posts.push({...payload.formData, id: payload.id})
   },
-  updatePostInPosts (state, payload) {
-    const index = state.posts.findIndex(i => i.id === payload.id)
-    state.posts[index] = {...payload.formData, id: payload.id}
+  updatePostInPosts (state, post) {
+    const index = state.posts.findIndex(i => i._id === post._id)
+    state.posts[index] = post
   },
   deletePostInPosts (state, id) {
     const index = state.posts.findIndex(i => i.id === id)
@@ -137,17 +137,29 @@ export const actions = {
       //   })
     )
   },
-  updatePost ({ commit, state }, payload) {
+  updatePost ({ commit, state }, post) {
+    post.updated = new Date().toISOString()
     return (
-      this.$axios.$put('/post/' + payload.id + '.json' + '?auth=' + state.user.idToken, payload.formData)
-        .then(data => {
+      this.$axios.$put('http://localhost:3000/api/post/' + post._id, post)
+        .then(() => {
           commit('setError', '')
-          commit('updatePostInPosts', payload)
+          commit('updatePostInPosts', post)
         })
         .catch(err => {
           commit('setError', 'Cannot update post. Please try again later')
+          return console.log(err)
         })
     )
+    // return (
+    //   this.$axios.$put('/post/' + payload.id + '.json' + '?auth=' + state.user.idToken, payload.formData)
+    //     .then(data => {
+    //       commit('setError', '')
+    //       commit('updatePostInPosts', payload)
+    //     })
+    //     .catch(err => {
+    //       commit('setError', 'Cannot update post. Please try again later')
+    //     })
+    // )
   },
   deletePost ({ commit, state }, id) {
     return (
@@ -353,16 +365,18 @@ export const actions = {
   },
   updateUser ({ commit }, form) {
     form.updated = new Date().toISOString()
-    this.$axios.$put('http://localhost:3000/api/user', form)
-      .then(() => {
-        commit('setError', '')
-        commit('updateUser', form)
-      })
-      .catch(err => {
-        commit('setError', 'Could not update the user. Please try again later')
-        console.error(err)
-        console.log(err)
-      })
+    return (
+      this.$axios.$put('http://localhost:3000/api/user', form)
+        .then(() => {
+          commit('setError', '')
+          commit('updateUser', form)
+        })
+        .catch(err => {
+          commit('setError', 'Could not update the user. Please try again later')
+          console.error(err)
+          console.log(err)
+        })
+    )
     // let user = {...form}
     // delete user['id']
     // delete user['idToken']

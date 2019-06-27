@@ -38,7 +38,7 @@ const getUser = (req, res, next) => {
     })
     .catch(err => {
       console.error(err)
-      return console.log(err)
+      return next(err)
     })
 }
 
@@ -108,7 +108,6 @@ const addUser = (req, res, next) => {
 }
 
 const updateUser = (req, res, next) => {
-  console.log(req.body)
   db.none('UPDATE users SET firstname=${firstname}, surname=${surname}, updated=${updated} WHERE _id=${_id}', req.body)
     .then(() => {
       res.status(202).json({
@@ -118,7 +117,7 @@ const updateUser = (req, res, next) => {
     })
     .catch(err => {
       console.error(err)
-      return console.log(err)
+      return next(err)
     })
 }
 
@@ -139,6 +138,21 @@ const getPosts = (req, res, next) => {
     });
 }
 
+const getPost = (req, res, next) => {
+  db.one('SELECT * FROM posts WHERE _id=${id}', req.params)
+    .then(data => {
+      res.status(200).json({
+        status: 'success',
+        post: data,
+        message: 'Retrieved post'
+      })
+    })
+    .catch(err => {
+      console.error(err)
+      return next(err)
+    })
+}
+
 const addPost = (req, res, next) => {
   db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${imgalt}, ${userid}) RETURNING _id', req.body)
     .then((data) => {
@@ -150,10 +164,26 @@ const addPost = (req, res, next) => {
         })
       )
     })
-    .catch(error => {
-      console.error(error)
-      return next(error)
+    .catch(err => {
+      console.error(err)
+      return next(err)
     });
+}
+
+const updatePost = (req, res, next) => {
+  console.log(req.body)
+  db.none('UPDATE posts SET title=${title}, description=${description}, content=${content}, imgurl=${imgurl}, imgalt=${imgalt}, updated=${updated} WHERE _id=${_id}', req.body)
+    .then(() => {
+      console.log('Post updated')
+      res.status(202).json({
+        status: 'success',
+        message: 'Post updated'
+      })
+    })
+    .catch(err => {
+      console.error(err)
+      return next(err)
+    })
 }
 
 module.exports = {
@@ -163,5 +193,7 @@ module.exports = {
   addUser,
   updateUser,
   getPosts,
-  addPost
+  getPost,
+  addPost,
+  updatePost
 }
