@@ -111,7 +111,6 @@ const addUser = (req, res, next) => {
 const getPosts = (req, res, next) => {
   db.any('SELECT * FROM posts', [true])
     .then(data => {
-      console.log('Posts fetched')
       return (
         res.status(200).json({
           status: 'success',
@@ -121,16 +120,13 @@ const getPosts = (req, res, next) => {
       )
     })
     .catch(error => {
-      console.log('Posts not fetched')
       return next(error)
     });
 }
 
 const addPost = (req, res, next) => {
-  console.log(req.body)
   db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${imgalt}, ${userid}) RETURNING _id', req.body)
     .then((data) => {
-      console.log(data)
       return (
         res.status(200).json({
           status: 'success',
@@ -140,7 +136,6 @@ const addPost = (req, res, next) => {
       )
     })
     .catch(error => {
-      console.log('Error insert row')
       console.error(error)
       return next(error)
     });

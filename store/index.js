@@ -30,7 +30,6 @@ export const mutations = {
     state.isLoading = false
   },
   loadUser (state, user) {
-    console.log('LoadUser: ', user)
     state.user = user
   },
   updateUser (state, user) {
@@ -63,7 +62,6 @@ export const actions = {
             return(
               context.app.$axios.$get('http://localhost:3000/api/user/' + userid)
                 .then(data => {
-                  console.log(data)
                   vuexContext.commit('loadUser', data.user)
               })
               .catch(err => {
