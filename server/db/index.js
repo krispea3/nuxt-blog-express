@@ -186,6 +186,20 @@ const updatePost = (req, res, next) => {
     })
 }
 
+const deletePost = (req, res, next) => {
+  db.none('DELETE FROM posts WHERE _id=${id}', req.params)
+    .then(() => {
+      res.status(200).json({
+        status: 'succesful',
+        message: 'Post deleted'
+      })
+    })
+    .catch(err => {
+      console.error(err)
+      return next(err)
+    })
+}
+
 module.exports = {
   getUsers,
   login,
@@ -195,5 +209,6 @@ module.exports = {
   getPosts,
   getPost,
   addPost,
-  updatePost
+  updatePost,
+  deletePost
 }

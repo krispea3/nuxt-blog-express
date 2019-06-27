@@ -163,15 +163,26 @@ export const actions = {
   },
   deletePost ({ commit, state }, id) {
     return (
-      this.$axios.$delete('/post/' + id + '.json' + '?auth=' + state.user.idToken)
-        .then(data => {
+      this.$axios.$delete('http://localhost:3000/api/post/' + id)
+        .then(() => {
           commit('setError', '')
           commit('deletePostInPosts', id)
         })
         .catch(err => {
           commit('setError', 'Error deleting the post. Try again later')
+          console.log(err)
         })
     )
+    // return (
+    //   this.$axios.$delete('/post/' + id + '.json' + '?auth=' + state.user.idToken)
+    //     .then(data => {
+    //       commit('setError', '')
+    //       commit('deletePostInPosts', id)
+    //     })
+    //     .catch(err => {
+    //       commit('setError', 'Error deleting the post. Try again later')
+    //     })
+    // )
   },
   register ({ commit, dispatch }, formData) {
     // Write user in postgres database

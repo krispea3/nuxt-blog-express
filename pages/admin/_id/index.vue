@@ -13,7 +13,6 @@ import PostForm from '~/components/posts/PostForm'
 
 export default {
   asyncData (context) {
-    console.log(context.params)
     return (
       context.app.$axios.$get('http://localhost:3000/api/post/' + context.params.id)
         .then(data => {
@@ -55,7 +54,7 @@ export default {
         })
     },
     onDelete () {
-      this.$store.dispatch('deletePost', this.$route.params.id)
+      this.$store.dispatch('deletePost', +this.$route.params.id)
         .then(() => {
           this.$router.push('/admin')
         })
