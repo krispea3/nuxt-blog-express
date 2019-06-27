@@ -2,17 +2,17 @@
     <b-form>
       <b-form-group
         id="input-group-1"
-        label="Firstname:"
+        label="firstname:"
         label-for="input-1">
-        <b-form-input :class="{invalid: $v.form.firstName.$error}"
+        <b-form-input :class="{invalid: $v.form.firstname.$error}"
           id="input-1"
-          v-model="form.firstName"
+          v-model="form.firstname"
           type="text"
           placeholder="Enter firstname"
-          @blur="$v.form.firstName.$touch()">
+          @blur="$v.form.firstname.$touch()">
         </b-form-input>
-        <div v-if="$v.form.firstName.$dirty">
-          <span class="error" v-if="!$v.form.firstName.required">Firstname required</span>
+        <div v-if="$v.form.firstname.$dirty">
+          <span class="error" v-if="!$v.form.firstname.required">firstname required</span>
         </div>
       </b-form-group>
 
@@ -20,15 +20,15 @@
         id="input-group-2"
         label="Surname:"
         label-for="input-2">
-        <b-form-input :class="{invalid: $v.form.surName.$error}"
+        <b-form-input :class="{invalid: $v.form.surname.$error}"
           id="input-2"
-          v-model="form.surName"
+          v-model="form.surname"
           type="text"
           placeholder="Enter surname"
-          @blur="$v.form.surName.$touch()">
+          @blur="$v.form.surname.$touch()">
         </b-form-input>
-        <div v-if="$v.form.surName.$dirty">
-          <span class="error" v-if="!$v.form.surName.required">Surname required</span>
+        <div v-if="$v.form.surname.$dirty">
+          <span class="error" v-if="!$v.form.surname.required">Surname required</span>
         </div>
 
       </b-form-group>
@@ -110,8 +110,8 @@ export default {
   data () {
     return {
       form: {
-        firstName: '',
-        surName: '',
+        firstname: '',
+        surname: '',
         email: '',
         password: ''
       },
@@ -119,10 +119,10 @@ export default {
   },
   validations: {
     form: {
-      firstName: {
+      firstname: {
         required
       },
-      surName: {
+      surname: {
         required
       },
       email: {

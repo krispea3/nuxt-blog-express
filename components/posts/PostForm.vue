@@ -163,7 +163,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.isSaving = true
         this.formData.updated = new Date()
         const user = this.$store.getters.user
-        const author = user.firstName + ' ' + user.surName
+        const author = user.firstname + ' ' + user.surname
         this.formData.author = author
 
         if (!this.post) {

@@ -172,8 +172,8 @@ export const actions = {
     //         })
     //         .catch(err => console.log(err))
     //       const user = {
-    //         firstName: formData.firstName,
-    //         surName: formData.surName,
+    //         firstname: formData.firstname,
+    //         surname: formData.surname,
     //         email: formData.email,
     //         idToken: data.idToken
     //       }

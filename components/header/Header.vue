@@ -14,7 +14,7 @@
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown v-if="user.email"
           id="my-nav-dropdown"
-          :text="'Welcome ' + user.firstName"
+          :text="'Welcome ' + user.firstname"
           toggle-class="nav-link-custom"
           right
         >

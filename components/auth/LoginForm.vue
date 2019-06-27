@@ -60,8 +60,8 @@ export default {
   data () {
     return {
       form: {
-        firstName: '',
-        surName: '',
+        firstname: '',
+        surname: '',
         email: '',
         password: ''
       },

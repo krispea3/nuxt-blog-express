@@ -49,7 +49,7 @@ const getUser = (req, res, next) => {
 
 const addUser = (req, res, next) => {
   // Field validation
-  if (req.body.firstName === "" | req.body.surName === "" | req.body.email === "" | req.body.password === "") {
+  if (req.body.firstname === "" | req.body.surname === "" | req.body.email === "" | req.body.password === "") {
     res.status(403)
     return res.send('All fields are required')
     // throw new Error('All fields are required')
@@ -67,7 +67,7 @@ const addUser = (req, res, next) => {
         return res.send('Email already registered')
       }
       // Add User if email not in use
-      db.none('INSERT INTO users(firstname, surname, email, password) VALUES(${firstName}, ${surName}, ${email}, ${password})', req.body)
+      db.none('INSERT INTO users(firstname, surname, email, password) VALUES(${firstname}, ${surname}, ${email}, ${password})', req.body)
         .then(() => {
           return (
             res.status(200).json({
