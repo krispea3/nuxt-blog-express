@@ -260,7 +260,7 @@ export const actions = {
   login ({ commit, dispatch }, formData) {
     // Login user through Postgres DB
     return (
-      this.$axios.$get('http://localhost:3000/api/login', {headers: { 'email': formData.email, 'password': formData.password }})
+      this.$axios.$post('http://localhost:3000/api/login', formData)
         .then(data => {
           // Set Cookies. Token is pseudo token. HAS TO BE CHANGED
           const now = new Date()

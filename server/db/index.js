@@ -43,9 +43,9 @@ const getUser = (req, res, next) => {
 }
 
 const login = (req, res, next) => {
-  db.one('SELECT * FROM users WHERE email=${email}', req.headers)
+  db.one('SELECT * FROM users WHERE email=${email}', req.body)
     .then(data => {
-      if (data.password != req.headers.password) {
+      if (data.password != req.body.password) {
         res.status(401)
         return res.send('Invalid password')
       } else {
