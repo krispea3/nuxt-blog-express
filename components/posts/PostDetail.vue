@@ -3,8 +3,8 @@
 
         <b-card-img v-if="!isPreview"
           class="mb-3"
-          :src="post.imgUrl" 
-          :alt="post.imgAlt"
+          :src="post.imgurl" 
+          :alt="post.imgalt"
           img-top>
         </b-card-img>
 

@@ -92,15 +92,25 @@ export const actions = {
     )
   },
   addPost ({ commit, state }, formData) {
+    formData.userid = state.user._id
     return (
-      this.$axios.$post('/post.json' + '?auth=' + state.user.idToken, formData)
-        .then(data => {
+      this.$axios.$post('http://localhost:3000/api/post', formData)
+        .then((data) => {
           commit('setError', '')
-          commit('addPostToPosts', {formData: formData, id: data.name})
+          commit('addPostToPosts', formData)
         })
         .catch(err => {
-          commit('setError', 'Cannot add post. Try again later')
+          commit('setError', 'Post not added. Please try again later')
+          console.log(err.data)
         })
+      // this.$axios.$post('/post.json' + '?auth=' + state.user.idToken, formData)
+      //   .then(data => {
+      //     commit('setError', '')
+      //     commit('addPostToPosts', {formData: formData, id: data.name})
+      //   })
+      //   .catch(err => {
+      //     commit('setError', 'Cannot add post. Try again later')
+      //   })
     )
   },
   updatePost ({ commit, state }, payload) {

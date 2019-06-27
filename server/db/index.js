@@ -108,17 +108,20 @@ const getPosts = (req, res, next) => {
 
 const addPost = (req, res, next) => {
   console.log(req.body)
-  db.none('INSERT INTO posts(title, description, user_id) VALUES(${title}, ${description}, 1)', req.body)
-    .then(() => {
+  db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${imgalt}, ${userid}) RETURNING _id', req.body)
+    .then((data) => {
+      console.log(data)
       return (
         res.status(200).json({
           status: 'success',
+          postid: data._id,
           message: 'Post added'
         })
       )
     })
     .catch(error => {
       console.log('Error insert row')
+      console.error(error)
       return next(error)
     });
 }

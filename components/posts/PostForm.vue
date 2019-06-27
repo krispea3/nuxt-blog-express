@@ -58,7 +58,7 @@
         label-for="input-1">
         <b-form-input
           id="input-1"
-          v-model="formData.imgUrl"
+          v-model="formData.imgurl"
           type="text"
           placeholder="Enter image URL">
         </b-form-input>
@@ -70,7 +70,7 @@
         label-for="input-1">
         <b-form-input
           id="input-1"
-          v-model="formData.imgAlt"
+          v-model="formData.imgalt"
           type="text"
           placeholder="Enter image alt-tag">
         </b-form-input>
@@ -113,8 +113,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.title = this.post.title
         this.formData.description = this.post.description
         this.formData.content = this.post.content
-        this.formData.imgUrl = this.post.imgUrl
-        this.formData.imgAlt = this.post.imgAlt
+        this.formData.imgurl = this.post.imgurl
+        this.formData.imgalt = this.post.imgalt
         this.formData.author = this.post.author
         this.formData.created = this.post.created
         this.formData.updated = this.post.updated
@@ -128,8 +128,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           title: '',
           description: '',
           content: '',
-          imgUrl: '',
-          imgAlt: '',
+          imgurl: '',
+          imgalt: '',
           author: '',
           created: null,
           updated: null
@@ -176,8 +176,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         // Reset our form values
         this.formData.text = ''
         this.formData.content = ''
-        this.formData.imgUrl = ''
-        this.formData.imgAlt = ''
+        this.formData.imgurl = ''
+        this.formData.imgalt = ''
         // Trick to reset/clear native browser form validation state
         // this.show = false
         // this.$nextTick(() => {
