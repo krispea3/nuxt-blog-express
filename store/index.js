@@ -352,19 +352,30 @@ export const actions = {
     // )
   },
   updateUser ({ commit }, form) {
-    let user = {...form}
-    delete user['id']
-    delete user['idToken']
-    return (
-      this.$axios.$put('/users/' + form.id + '.json' + '?auth=' + form.idToken, user)
-        .then(data => {
-          commit('setError', '')
-          commit('updateUser', form)
-        })
-        .catch(err => {
-          commit('setError', 'Could not update the user. Please try again later')
-        })
-    )
+    form.updated = new Date().toISOString()
+    this.$axios.$put('http://localhost:3000/api/user', form)
+      .then(() => {
+        commit('setError', '')
+        commit('updateUser', form)
+      })
+      .catch(err => {
+        commit('setError', 'Could not update the user. Please try again later')
+        console.error(err)
+        console.log(err)
+      })
+    // let user = {...form}
+    // delete user['id']
+    // delete user['idToken']
+    // return (
+    //   this.$axios.$put('/users/' + form.id + '.json' + '?auth=' + form.idToken, user)
+    //     .then(data => {
+    //       commit('setError', '')
+    //       commit('updateUser', form)
+    //     })
+    //     .catch(err => {
+    //       commit('setError', 'Could not update the user. Please try again later')
+    //     })
+    // )
   },
   logout (context) {
     // Remove cookies

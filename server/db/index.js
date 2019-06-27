@@ -107,6 +107,21 @@ const addUser = (req, res, next) => {
     })
 }
 
+const updateUser = (req, res, next) => {
+  console.log(req.body)
+  db.none('UPDATE users SET firstname=${firstname}, surname=${surname}, updated=${updated} WHERE _id=${_id}', req.body)
+    .then(() => {
+      res.status(202).json({
+        status: 'success',
+        message: 'user updated'
+      })
+    })
+    .catch(err => {
+      console.error(err)
+      return console.log(err)
+    })
+}
+
 // Posts
 const getPosts = (req, res, next) => {
   db.any('SELECT * FROM posts', [true])
@@ -146,6 +161,7 @@ module.exports = {
   login,
   getUser,
   addUser,
+  updateUser,
   getPosts,
   addPost
 }
