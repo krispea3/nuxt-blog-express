@@ -26,6 +26,23 @@ const getUsers = (req, res, next) => {
 }
 
 const getUser = (req, res, next) => {
+  db.one('SELECT * FROM users WHERE _id=${id}', req.params)
+    .then(data => {
+      delete data['password']
+      data.idToken = "123456"
+      res.status(200).json({
+        status: 'success',
+        user: data,
+        message: 'User retrieved'
+      })
+    })
+    .catch(err => {
+      console.error(err)
+      return console.log(err)
+    })
+}
+
+const login = (req, res, next) => {
   db.one('SELECT * FROM users WHERE email=${email}', req.headers)
     .then(data => {
       if (data.password != req.headers.password) {
@@ -69,11 +86,12 @@ const addUser = (req, res, next) => {
         return res.send('Email already registered')
       }
       // Add User if email not in use
-      db.none('INSERT INTO users(firstname, surname, email, password) VALUES(${firstname}, ${surname}, ${email}, ${password})', req.body)
-        .then(() => {
+      db.one('INSERT INTO users(firstname, surname, email, password) VALUES(${firstname}, ${surname}, ${email}, ${password}) RETURNING _id', req.body)
+        .then((data) => {
           return (
             res.status(200).json({
               status: 'Success',
+              userid: data._id,
               message: 'User added'
             })
           )
@@ -93,6 +111,7 @@ const addUser = (req, res, next) => {
 const getPosts = (req, res, next) => {
   db.any('SELECT * FROM posts', [true])
     .then(data => {
+      console.log('Posts fetched')
       return (
         res.status(200).json({
           status: 'success',
@@ -102,6 +121,7 @@ const getPosts = (req, res, next) => {
       )
     })
     .catch(error => {
+      console.log('Posts not fetched')
       return next(error)
     });
 }
@@ -128,6 +148,7 @@ const addPost = (req, res, next) => {
 
 module.exports = {
   getUsers,
+  login,
   getUser,
   addUser,
   getPosts,

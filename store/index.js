@@ -30,6 +30,7 @@ export const mutations = {
     state.isLoading = false
   },
   loadUser (state, user) {
+    console.log('LoadUser: ', user)
     state.user = user
   },
   updateUser (state, user) {
@@ -51,45 +52,70 @@ export const actions = {
   nuxtServerInit (vuexContext, context) {
     return (
       // Fetching posts
-      context.app.$axios.$get('/post.json')
+      context.app.$axios.$get('http://localhost:3000/api/posts')
         .then(data => {
-          const posts = []
-          for (const key in data) {
-            posts.push({...data[key], id: key})
-          }
-          vuexContext.commit('loadPosts', posts)
-      // Fetching user if cookie token available
+          vuexContext.commit('loadPosts', data.posts)
+          // Loading user from cookies
           if (context.req.headers.cookie) {
             const token = context.app.$cookies.get('token')
-            const userEmail = context.app.$cookies.get('user')
+            const userid = context.app.$cookies.get('user')
             const expirationDate = context.app.$cookies.get('expirationDate')
-            let user = {}
-            return context.app.$axios.$get('/users.json')
-              .then(data => {
-                for (let key in data) {
-                  if (data[key].email === userEmail) {
-                    user = data[key]
-                    user.id = key
-                    user.idToken = token
-                    vuexContext.commit('loadUser', user)
-                    vuexContext.commit('setError', '')
-                    break
-                  }
-                }    
+            return(
+              context.app.$axios.$get('http://localhost:3000/api/user/' + userid)
+                .then(data => {
+                  console.log(data)
+                  vuexContext.commit('loadUser', data.user)
               })
               .catch(err => {
-                vuexContext.commit('setError', 'Could not Autologin. Refresh the page or Login again')
-                return context.error(err)
+                return console.log(err)
               })
-          } else {
-              return
-            }
+            )
+          }
         })
         .catch(err => {
-          return context.error(err)
-        })      
-      
+          return console.log(err)
+        })
     )
+    // return (
+      // Fetching posts
+      // context.app.$axios.$get('/post.json')
+      //   .then(data => {
+      //     const posts = []
+      //     for (const key in data) {
+      //       posts.push({...data[key], id: key})
+      //     }
+      //     vuexContext.commit('loadPosts', posts)
+      // Fetching user if cookie token available
+        //   if (context.req.headers.cookie) {
+        //     const token = context.app.$cookies.get('token')
+        //     const userEmail = context.app.$cookies.get('user')
+        //     const expirationDate = context.app.$cookies.get('expirationDate')
+        //     let user = {}
+        //     return context.app.$axios.$get('/users.json')
+        //       .then(data => {
+        //         for (let key in data) {
+        //           if (data[key].email === userEmail) {
+        //             user = data[key]
+        //             user.id = key
+        //             user.idToken = token
+        //             vuexContext.commit('loadUser', user)
+        //             vuexContext.commit('setError', '')
+        //             break
+        //           }
+        //         }    
+        //       })
+        //       .catch(err => {
+        //         vuexContext.commit('setError', 'Could not Autologin. Refresh the page or Login again')
+        //         return context.error(err)
+        //       })
+        //   } else {
+        //       return
+        //     }
+        // })
+        // .catch(err => {
+        //   return context.error(err)
+        // })         
+      // )
   },
   addPost ({ commit, state }, formData) {
     formData.userid = state.user._id
@@ -154,7 +180,7 @@ export const actions = {
             path: '/',
             expires: expirationDate
           })
-          this.$cookies.set('user', formData.email, {
+          this.$cookies.set('user', data.userid, {
             path: '/',
             expires: expirationDate
           })
@@ -236,7 +262,7 @@ export const actions = {
   login ({ commit, dispatch }, formData) {
     // Login user through Postgres DB
     return (
-      this.$axios.$get('http://localhost:3000/api/user/', {headers: { 'email': formData.email, 'password': formData.password }})
+      this.$axios.$get('http://localhost:3000/api/login', {headers: { 'email': formData.email, 'password': formData.password }})
         .then(data => {
           // Set Cookies. Token is pseudo token. HAS TO BE CHANGED
           const now = new Date()
@@ -246,7 +272,7 @@ export const actions = {
             path: '/',
             expires: expirationDate
           })
-          this.$cookies.set('user', formData.email, {
+          this.$cookies.set('user', data.user._id, {
             path: '/',
             expires: expirationDate
           })
@@ -256,8 +282,6 @@ export const actions = {
           })
           commit('setError', "")
           commit('login', data.user)
-          const type = typeof data.user
-          console.log(data.user, type)
         })
         .catch(err => {
           // Invalid email
