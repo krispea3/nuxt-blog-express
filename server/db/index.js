@@ -4,8 +4,10 @@ const options = {
   promiseLib: promise
 };
 const pgp = require('pg-promise')(options);
+const  jwt  =  require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+const SECRET_KEY = "secretkey050440";
 const saltRounds = 10;
 
 const cn = 'postgres://chris:phils33@localhost:5432/blog';
@@ -51,12 +53,21 @@ const login = (req, res, next) => {
       bcrypt.compare(req.body.password, data.password, function(err, response) {
         if (response == true)  {
           delete data['password']
-          // Pseudo token. HAS TO BE CHANGED
-          data.idToken = '123456'
+          // Generate JWT
+          const  expiresIn  =  3600;
+          const  accessToken  =  jwt.sign(
+            {id:  data._id}, 
+            SECRET_KEY,
+            {expiresIn:  expiresIn}
+          );
+
+          data.idToken = accessToken
           return (
             res.status(202).json({
               status: 'success',
               user: data,
+              token: accessToken,
+              expiresIn: expiresIn,
               message: 'Retrieved user'
             })
           )
@@ -97,10 +108,20 @@ const addUser = (req, res, next) => {
         req.body.password = hash
         db.one('INSERT INTO users(firstname, surname, email, password) VALUES(${firstname}, ${surname}, ${email}, ${password}) RETURNING _id', req.body)
         .then((data) => {
+          // Generate JWT
+          const  expiresIn  =  3600;
+          const  accessToken  =  jwt.sign(
+            {id:  data._id}, 
+            SECRET_KEY,
+            {expiresIn:  expiresIn}
+          );
+
           return (
             res.status(200).json({
               status: 'Success',
               userid: data._id,
+              token: accessToken,
+              expiresIn: expiresIn,
               message: 'User added'
             })
           )

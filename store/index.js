@@ -191,13 +191,9 @@ export const actions = {
         .then(data => {
           // Write cookies
           const now = new Date()
-          const expirationDate = new Date(now.getTime() + 3600 * 1000)
-          // this.$cookies.set('token', data.idToken, {
-          //   path: '/',
-          //   expires: expirationDate
-          // })
-          // Dummy token for testing purpose. HAS TO BE CHANGED!!!!!!!!!!!
-          this.$cookies.set('token', '123456', {
+          const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
+          // Set cookies. Token returned from addUser api
+          this.$cookies.set('token', data.token, {
             path: '/',
             expires: expirationDate
           })
@@ -211,8 +207,7 @@ export const actions = {
           })
 
           delete formData['password']
-          // Pseudo Token. HAS TO BE CHANGED
-          formData.idToken = '123456'
+          formData.idToken = data.token
           commit('setError', '') 
           commit('login', formData)
           console.log(data)
@@ -285,11 +280,11 @@ export const actions = {
     return (
       this.$axios.$post('http://localhost:3000/api/login', formData)
         .then(data => {
-          // Set Cookies. Token is pseudo token. HAS TO BE CHANGED
+          // Set Cookies. Token returned from Login
           const now = new Date()
-          const expirationDate = new Date(now.getTime() + 3600 * 1000)
+          const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
 
-          this.$cookies.set('token', '123456', {
+          this.$cookies.set('token', data.token, {
             path: '/',
             expires: expirationDate
           })
