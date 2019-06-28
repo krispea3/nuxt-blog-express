@@ -4,6 +4,9 @@ const options = {
   promiseLib: promise
 };
 const pgp = require('pg-promise')(options);
+const bcrypt = require('bcrypt');
+
+const saltRounds = 10;
 
 const cn = 'postgres://chris:phils33@localhost:5432/blog';
 const db = pgp(cn); // database instance;
@@ -45,23 +48,26 @@ const getUser = (req, res, next) => {
 const login = (req, res, next) => {
   db.one('SELECT * FROM users WHERE email=${email}', req.body)
     .then(data => {
-      if (data.password != req.body.password) {
-        res.status(401)
-        return res.send('Invalid password')
-      } else {
-        delete data['password']
-        // Pseudo token. HAS TO BE CHANGED
-        data.idToken = '123456'
-        return (
-          res.status(202).json({
-            status: 'success',
-            user: data,
-            message: 'Retrieved user'
-          })
-        )
-      }
+      bcrypt.compare(req.body.password, data.password, function(err, response) {
+        if (response == true)  {
+          delete data['password']
+          // Pseudo token. HAS TO BE CHANGED
+          data.idToken = '123456'
+          return (
+            res.status(202).json({
+              status: 'success',
+              user: data,
+              message: 'Retrieved user'
+            })
+          )
+        } else {
+          res.status(401)
+          return res.send('Invalid password')
+        }
+      })
     })
     .catch(err => {
+      console.error(err)
       return next(err)
     });
 }
@@ -86,7 +92,10 @@ const addUser = (req, res, next) => {
         return res.send('Email already registered')
       }
       // Add User if email not in use
-      db.one('INSERT INTO users(firstname, surname, email, password) VALUES(${firstname}, ${surname}, ${email}, ${password}) RETURNING _id', req.body)
+        // Hash password
+      hash = bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        req.body.password = hash
+        db.one('INSERT INTO users(firstname, surname, email, password) VALUES(${firstname}, ${surname}, ${email}, ${password}) RETURNING _id', req.body)
         .then((data) => {
           return (
             res.status(200).json({
@@ -100,6 +109,8 @@ const addUser = (req, res, next) => {
           console.error(err)
           return next(err)
         })
+
+      })
       return null
     })
     .catch(err => {
