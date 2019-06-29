@@ -115,9 +115,12 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.content = this.post.content
         this.formData.imgurl = this.post.imgurl
         this.formData.imgalt = this.post.imgalt
-        this.formData.author = this.post.author
+        this.formData.userid = this.post.userid
         this.formData.created = this.post.created
         this.formData.updated = this.post.updated
+        this.formData.firstname = this.post.firstname
+        this.formData.surname = this.post.surname
+
       }
     },
     data() {
@@ -130,7 +133,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           content: '',
           imgurl: '',
           imgalt: '',
-          author: '',
+          firstname: '',
+          surname: '',
           created: null,
           updated: null
         },
@@ -163,8 +167,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.isSaving = true
         this.formData.updated = new Date()
         const user = this.$store.getters.user
-        const author = user.firstname + ' ' + user.surname
-        this.formData.author = author
 
         if (!this.post) {
           this.formData.created = new Date()
