@@ -173,7 +173,6 @@ const getPosts = (req, res, next) => {
 const getPost = (req, res, next) => {
   db.one('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts._id=${id} AND posts.userid = users._id', req.params)
     .then(data => {
-      console.log(data)
       res.status(200).json({
         status: 'success',
         post: data,
@@ -204,10 +203,8 @@ const addPost = (req, res, next) => {
 }
 
 const updatePost = (req, res, next) => {
-  console.log(req.body)
   db.none('UPDATE posts SET title=${title}, description=${description}, content=${content}, imgurl=${imgurl}, imgalt=${imgalt}, updated=${updated} WHERE _id=${_id}', req.body)
     .then(() => {
-      console.log('Post updated')
       res.status(202).json({
         status: 'success',
         message: 'Post updated'
