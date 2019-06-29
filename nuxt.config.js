@@ -54,7 +54,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.BASE_URL || 'https://nuxt-blog-9be94.firebaseio.com',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
     credentials: false
   },
   /*

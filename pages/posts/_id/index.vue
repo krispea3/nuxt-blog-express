@@ -18,7 +18,7 @@ export default {
   asyncData (context) {
     console.log(context.params)
     return (
-      context.app.$axios.$get('http://localhost:3000/api/post/' + context.params.id)
+      context.app.$axios.$get('/api/post/' + context.params.id)
         .then(data => {
           return {
             loadedPost: data.post

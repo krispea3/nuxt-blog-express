@@ -59,7 +59,7 @@ export const actions = {
   nuxtServerInit (vuexContext, context) {
     return (
       // Fetching posts
-      context.app.$axios.$get('http://localhost:3000/api/posts')
+      context.app.$axios.$get('/api/posts')
         .then(data => {
           vuexContext.commit('loadPosts', data.posts)
           // Loading user from cookies
@@ -68,7 +68,7 @@ export const actions = {
             const userid = context.app.$cookies.get('user')
             const expirationDate = context.app.$cookies.get('expirationDate')
             return(
-              context.app.$axios.$get('http://localhost:3000/api/user/' + userid)
+              context.app.$axios.$get('/api/user/' + userid)
                 .then(data => {
                   vuexContext.commit('loadUser', data.user)
               })
@@ -126,7 +126,7 @@ export const actions = {
   addPost ({ commit, state }, formData) {
     formData.userid = state.user._id
     return (
-      this.$axios.$post('http://localhost:3000/api/post', formData)
+      this.$axios.$post('/api/post', formData)
         .then((data) => {
           commit('setError', '')
           commit('addPostToPosts', formData)
@@ -148,7 +148,7 @@ export const actions = {
   updatePost ({ commit, state }, post) {
     post.updated = new Date().toISOString()
     return (
-      this.$axios.$put('http://localhost:3000/api/post/' + post._id, post)
+      this.$axios.$put('/api/post/' + post._id, post)
         .then(() => {
           commit('setError', '')
           commit('updatePostInPosts', post)
@@ -162,7 +162,7 @@ export const actions = {
 
   deletePost ({ commit, state }, id) {
     return (
-      this.$axios.$delete('http://localhost:3000/api/post/' + id)
+      this.$axios.$delete('/api/post/' + id)
         .then(() => {
           commit('setError', '')
           commit('deletePostInPosts', id)
@@ -186,7 +186,7 @@ export const actions = {
   register ({ commit, dispatch }, formData) {
     // Write user in postgres database
     return (
-      this.$axios.$post('http://localhost:3000/api/user', formData)
+      this.$axios.$post('/api/user', formData)
         .then(data => {
           // Write cookies
           const now = new Date()
@@ -257,7 +257,7 @@ export const actions = {
     //       // Example how we could write our own express-server DB
     //       // Write data to our Express server api track-data
     //       return (
-    //         this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
+    //         this.$axios.post('/api/track-data', {data: formData.email})
     //           .then(res => {
     //             console.log(res)
     //             if (res.status < 400) {
@@ -277,7 +277,7 @@ export const actions = {
   login ({ commit, dispatch }, formData) {
     // Login user through Postgres DB
     return (
-      this.$axios.$post('http://localhost:3000/api/login', formData)
+      this.$axios.$post('/api/login', formData)
         .then(data => {
           // Set Cookies. Token returned from Login
           const now = new Date()
@@ -348,7 +348,7 @@ export const actions = {
     //             // Example how we could write our own express-server DB
     //             // Write data to our Express server API track-data
     //             return (
-    //               this.$axios.post('http://localhost:3000/api/track-data', {data: formData.email})
+    //               this.$axios.post('/api/track-data', {data: formData.email})
     //                 .then(res => {
     //                   console.log(res)
     //                   if (res.status < 400) {
@@ -371,7 +371,7 @@ export const actions = {
   updateUser ({ commit }, form) {
     form.updated = new Date().toISOString()
     return (
-      this.$axios.$put('http://localhost:3000/api/user', form)
+      this.$axios.$put('/api/user', form)
         .then(() => {
           commit('setError', '')
           commit('updateUser', form)
