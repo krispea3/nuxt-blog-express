@@ -17,6 +17,14 @@ export const mutations = {
     const index = state.posts.findIndex(i => i._id === post._id)
     state.posts[index] = post
   },
+  updatePostAuthor (state, user) {
+    state.posts.forEach(e => {
+      if (e.userid === user._id) {
+        e.firstname = user.firstname
+        e.surname = user.surname
+      }
+    })
+  },
   deletePostInPosts (state, id) {
     const index = state.posts.findIndex(i => i.id === id)
     state.posts.splice(index, 1)
@@ -150,17 +158,8 @@ export const actions = {
           return console.log(err)
         })
     )
-    // return (
-    //   this.$axios.$put('/post/' + payload.id + '.json' + '?auth=' + state.user.idToken, payload.formData)
-    //     .then(data => {
-    //       commit('setError', '')
-    //       commit('updatePostInPosts', payload)
-    //     })
-    //     .catch(err => {
-    //       commit('setError', 'Cannot update post. Please try again later')
-    //     })
-    // )
   },
+
   deletePost ({ commit, state }, id) {
     return (
       this.$axios.$delete('http://localhost:3000/api/post/' + id)
@@ -376,6 +375,7 @@ export const actions = {
         .then(() => {
           commit('setError', '')
           commit('updateUser', form)
+          commit('updatePostAuthor', form)
         })
         .catch(err => {
           commit('setError', 'Could not update the user. Please try again later')
