@@ -65,11 +65,28 @@ export default {
   computed: {
     filteredPosts () {
       const search = this.$store.getters.searchString
-      if (search === '') {
+      const userId = this.$store.getters.user._id
+      // Display all posts when no search and not Admin page
+      if (search === '' & !this.isAdmin) {
         return this.posts
-      } else {
-        return this.posts.filter(e => e.title.toUpperCase().includes(search.toUpperCase()))
       }
+      // Display only posts from logged in User in admin section
+      let filteredPosts = []
+      if (this.isAdmin) {
+        filteredPosts = this.posts.filter(e => {
+          return e.userid == userId
+        })
+      } else {
+        filteredPosts = this.posts
+      }
+      // Finally filter by search string
+      let displayPosts = []
+      if (search != '') {
+        displayPosts = filteredPosts.filter(e => e.title.toUpperCase().includes(search.toUpperCase()))
+      } else {
+        displayPosts = filteredPosts
+      }
+      return displayPosts
     },
     selectedDisplayType () {
       return this.displayType
