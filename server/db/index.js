@@ -155,7 +155,7 @@ const updateUser = (req, res, next) => {
 
 // Posts
 const getPosts = (req, res, next) => {
-  db.any('SELECT * FROM posts', [true])
+  db.any('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts.userid = users._id', [true])
     .then(data => {
       return (
         res.status(200).json({
@@ -171,8 +171,9 @@ const getPosts = (req, res, next) => {
 }
 
 const getPost = (req, res, next) => {
-  db.one('SELECT * FROM posts WHERE _id=${id}', req.params)
+  db.one('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts._id=${id} AND posts.userid = users._id', req.params)
     .then(data => {
+      console.log(data)
       res.status(200).json({
         status: 'success',
         post: data,

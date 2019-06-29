@@ -46,7 +46,7 @@
         </div>
         
         <div slot="footer">
-          <small class="text-muted">Last updated on {{ post.updated | date }} by {{ post.author }}</small>
+          <small class="text-muted">Updated on {{post.updated ?post.updated :post.created | date }} by {{ post.firstname + ' ' + post.surname }}</small>
         </div>
       </b-card>
 </template>
