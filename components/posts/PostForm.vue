@@ -20,11 +20,11 @@
       </b-form-group>
       <!-- Description -->
       <b-form-group
-        id="input-group-1"
+        id="input-group-2"
         label="Description"
-        label-for="input-1">
+        label-for="input-2">
         <b-form-textarea :class="{invalid: $v.formData.description.$error}"
-          id="input-1"
+          id="input-2"
           v-model="formData.description"
           type="text"
           placeholder="Enter description"
@@ -37,11 +37,11 @@
       </b-form-group>
       <!-- Content -->
       <b-form-group
-        id="input-group-1"
+        id="input-group-3"
         label="Content"
-        label-for="input-1">
+        label-for="input-3">
         <b-form-textarea :class="$v.formData.content.$error"
-          id="input-1"
+          id="input-3"
           v-model="formData.content"
           rows="5"
           placeholder="Enter content"
@@ -53,11 +53,11 @@
       </b-form-group>
       <!-- Image URL -->
       <b-form-group
-        id="input-group-1"
+        id="input-group-4"
         label="Image URL"
-        label-for="input-1">
+        label-for="input-4">
         <b-form-input
-          id="input-1"
+          id="input-4"
           v-model="formData.imgurl"
           type="text"
           placeholder="Enter image URL">
@@ -65,16 +65,20 @@
       </b-form-group>
       <!-- Image Alt -->
       <b-form-group
-        id="input-group-1"
+        id="input-group-5"
         label="Image alt-tag"
-        label-for="input-1">
+        label-for="input-5">
         <b-form-input
-          id="input-1"
+          id="input-5"
           v-model="formData.imgalt"
           type="text"
           placeholder="Enter image alt-tag">
         </b-form-input>
       </b-form-group>
+      <!-- Draft -->
+      <!-- <b-form-checkbox-group v-model="formData.check" id="checkboxes-6" class="mb-3"> -->
+        <b-form-checkbox v-model="formData.draft">Draft?</b-form-checkbox>
+      <!-- </b-form-checkbox-group> -->
 
       <b-alert v-if="error" variant="danger" show>{{ error }}</b-alert>
 
@@ -115,6 +119,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.content = this.post.content
         this.formData.imgurl = this.post.imgurl
         this.formData.imgalt = this.post.imgalt
+        this.formData.draft = this.post.draft
+        this.formData.published = this.post.published
         this.formData.userid = this.post.userid
         this.formData.created = this.post.created
         this.formData.updated = this.post.updated
@@ -133,6 +139,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           content: '',
           imgurl: '',
           imgalt: '',
+          draft: false,
+          published: true,
           firstname: '',
           surname: '',
           created: null,

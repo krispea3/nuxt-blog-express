@@ -1,5 +1,5 @@
 <template>
-      <b-card class="mb-3 text-center">
+      <b-card class="mb-3 text-center" :class="{draft: post.draft, published: post.published}">
 
         <b-card-img v-if="!isPreview"
           class="mb-3"
@@ -88,5 +88,13 @@ export default {
 <style scoped>
   .lineBreak {
     white-space: pre-wrap;
+  }
+  .draft {
+    font-style: italic;
+    font-weight: lighter;
+  }
+  .published {
+    border: 0.5px solid green;
+
   }
 </style>

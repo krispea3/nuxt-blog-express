@@ -155,7 +155,7 @@ const updateUser = (req, res, next) => {
 
 // Posts
 const getPosts = (req, res, next) => {
-  db.any('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts.userid = users._id', [true])
+  db.any('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts.userid = users._id', [true])
     .then(data => {
       return (
         res.status(200).json({
@@ -171,7 +171,7 @@ const getPosts = (req, res, next) => {
 }
 
 const getPost = (req, res, next) => {
-  db.one('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts._id=${id} AND posts.userid = users._id', req.params)
+  db.one('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts._id=${id} AND posts.userid = users._id', req.params)
     .then(data => {
       res.status(200).json({
         status: 'success',
@@ -186,7 +186,7 @@ const getPost = (req, res, next) => {
 }
 
 const addPost = (req, res, next) => {
-  db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${imgalt}, ${userid}) RETURNING _id', req.body)
+  db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, draft, published, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${imgalt},${draft}, ${published}, ${userid}) RETURNING _id', req.body)
     .then((data) => {
       return (
         res.status(200).json({
@@ -203,7 +203,7 @@ const addPost = (req, res, next) => {
 }
 
 const updatePost = (req, res, next) => {
-  db.none('UPDATE posts SET title=${title}, description=${description}, content=${content}, imgurl=${imgurl}, imgalt=${imgalt}, updated=${updated} WHERE _id=${_id}', req.body)
+  db.none('UPDATE posts SET title=${title}, description=${description}, content=${content}, imgurl=${imgurl}, imgalt=${imgalt}, draft=${draft}, published=${published}, updated=${updated} WHERE _id=${_id}', req.body)
     .then(() => {
       res.status(202).json({
         status: 'success',
