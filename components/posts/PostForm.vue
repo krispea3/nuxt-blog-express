@@ -63,6 +63,22 @@
           placeholder="Enter image URL">
         </b-form-input>
       </b-form-group>
+      <!-- Image Upload -->
+      <b-form-group
+        id="input-group-imgUpload"
+        label="Upload image"
+        label-for="input-imgUpload">
+        <b-form-file
+          id="input-imgUpload"
+          v-model="formData.img"
+          :state="Boolean(formData.img)"
+          placeholder="Choose a file..."
+          drop-placeholder="Drop file here..."
+        >
+        </b-form-file>
+      </b-form-group>
+      <p>{{ formData.img }}</p>
+
       <!-- Image Alt -->
       <b-form-group
         id="input-group-imgAlt"
@@ -121,6 +137,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.description = this.post.description
         this.formData.content = this.post.content
         this.formData.imgurl = this.post.imgurl
+        this.formData.img = this.post.img
         this.formData.imgalt = this.post.imgalt
         this.formData.draft = this.post.draft
         this.formData.published = this.post.published
@@ -141,6 +158,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           description: '',
           content: '',
           imgurl: '',
+          img: null,
           imgalt: '',
           draft: false,
           published: true,
@@ -178,7 +196,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.isSaving = true
         this.formData.updated = new Date()
         const user = this.$store.getters.user
-
         if (!this.post) {
           this.formData.created = new Date()
         }

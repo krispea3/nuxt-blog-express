@@ -10,8 +10,8 @@ export const mutations = {
   loadPosts (state, posts) {
     state.posts = posts
   },
-  addPostToPosts (state, payload) {
-    state.posts.push({...payload.formData, id: payload.id})
+  addPostToPosts (state, post) {
+    state.posts.push(post)
   },
   updatePostInPosts (state, post) {
     const index = state.posts.findIndex(i => i._id === post._id)
@@ -128,6 +128,9 @@ export const actions = {
     return (
       this.$axios.$post('/api/post', formData)
         .then((data) => {
+          formData._id = data.postid
+          formData.firstname = state.user.firstname
+          formData.surname = state.user.surname     
           commit('setError', '')
           commit('addPostToPosts', formData)
         })

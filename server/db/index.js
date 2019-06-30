@@ -187,7 +187,7 @@ const getPost = (req, res, next) => {
 }
 
 const addPost = (req, res, next) => {
-  db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, draft, published, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${imgalt},${draft}, ${published}, ${userid}) RETURNING _id', req.body)
+  db.one('INSERT INTO posts(title, description, content, imgurl, img, imgalt, draft, published, userid) VALUES(${title}, ${description}, ${content}, ${imgurl}, ${img}, ${imgalt},${draft}, ${published}, ${userid}) RETURNING _id', req.body)
     .then((data) => {
       return (
         res.status(200).json({
