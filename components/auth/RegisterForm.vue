@@ -1,11 +1,11 @@
 <template>
     <b-form>
       <b-form-group
-        id="input-group-1"
+        id="input-group-firstname"
         label="firstname:"
-        label-for="input-1">
+        label-for="input-firstname">
         <b-form-input :class="{invalid: $v.form.firstname.$error}"
-          id="input-1"
+          id="input-firstname"
           v-model="form.firstname"
           type="text"
           placeholder="Enter firstname"
@@ -17,11 +17,11 @@
       </b-form-group>
 
       <b-form-group
-        id="input-group-2"
+        id="input-group-surname"
         label="Surname:"
-        label-for="input-2">
+        label-for="input-surname">
         <b-form-input :class="{invalid: $v.form.surname.$error}"
-          id="input-2"
+          id="input-surname"
           v-model="form.surname"
           type="text"
           placeholder="Enter surname"
@@ -34,12 +34,12 @@
       </b-form-group>
 
       <b-form-group
-        id="input-group-3"
+        id="input-group-email"
         label="Email address:"
-        label-for="input-3"
+        label-for="input-email"
         description="We'll never share your email with anyone else.">
         <b-form-input :class="{invalid: $v.form.email.$error}"
-          id="input-3"
+          id="input-email"
           v-model="form.email"
           type="email"
           :disabled="user ?true :false"
@@ -54,12 +54,12 @@
       </b-form-group>
 
       <b-form-group v-if="!user"
-        id="input-group-4"
+        id="input-group-password"
         label="Password:"
-        label-for="input-4"
+        label-for="input-password"
         description="Minimum 8 chars">
         <b-form-input :class="{invalid: $v.form.password.$error}"
-          id="input-4"
+          id="input-password"
           v-model="form.password"
           type="password"
           placeholder="Enter password"
@@ -70,6 +70,23 @@
           <span class="error" v-if="!$v.form.password.minLength">Password needs at least 8 chars</span>
         </div>
       </b-form-group>
+
+      <b-form-group v-if="!user"
+        id="input-group-confirmPassword"
+        label="Confirm password:"
+        label-for="input-confirmPassword">
+        <b-form-input :class="{invalid: $v.form.confirmPassword.$error}"
+          id="input-confirmPassword"
+          v-model="form.confirmPassword"
+          type="password"
+          placeholder="Confirm password"
+          @blur="$v.form.confirmPassword.$touch()">
+        </b-form-input>
+        <div v-if="$v.form.confirmPassword.$dirty">
+          <span class="error" v-if="!$v.form.confirmPassword.passwordConfirmed">Passwords don't match</span>
+        </div>
+      </b-form-group>
+
 
       <b-alert v-if="error" variant="danger" show>{{ error }}</b-alert>
 
@@ -96,7 +113,7 @@
 </template>
 
 <script>
-import { required, email, minLength } from 'vuelidate/lib/validators'
+import { required, email, minLength, sameAs } from 'vuelidate/lib/validators'
 import axios from 'axios'
 
 export default {
@@ -105,6 +122,7 @@ export default {
       this.form = {...this.user}
       // Assigning pseudo password for formvalidation. Will be written no where
       this.form.password = '12345678'
+      this.form.confirmPassword = '12345678'
     }
   },
   data () {
@@ -113,7 +131,8 @@ export default {
         firstname: '',
         surname: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
       },
     }
   },
@@ -140,7 +159,10 @@ export default {
       password: {
         required,
         minLength: minLength(8)
-      }
+      },
+      confirmPassword: {
+          passwordConfirmed: sameAs('password')
+      } 
     }
   },
   props: {
@@ -159,12 +181,14 @@ export default {
   },
   methods: {
     register () {
+      delete this.form['confirmPassword']
       this.$store.dispatch('isLoading', true)
       this.$emit('register', this.form)
     },
     updateUser () {
       // remove password from the form
       delete this.form['password']
+      delete this.form['confirmPassword']
       this.$store.dispatch('isLoading', true)
       this.$emit('updateUser', this.form)
     }

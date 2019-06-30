@@ -3,11 +3,11 @@
     <b-form>
       <!-- Title -->
       <b-form-group
-        id="input-group-1"
+        id="input-group-title"
         label="Title"
-        label-for="input-1">
+        label-for="input-title">
         <b-form-input :class="{invalid: $v.formData.title.$error}"
-          id="input-1"
+          id="input-title"
           v-model="formData.title"
           type="text"
           placeholder="Enter title"
@@ -20,11 +20,11 @@
       </b-form-group>
       <!-- Description -->
       <b-form-group
-        id="input-group-2"
+        id="input-group-description"
         label="Description"
-        label-for="input-2">
+        label-for="input-description">
         <b-form-textarea :class="{invalid: $v.formData.description.$error}"
-          id="input-2"
+          id="input-description"
           v-model="formData.description"
           type="text"
           placeholder="Enter description"
@@ -37,11 +37,11 @@
       </b-form-group>
       <!-- Content -->
       <b-form-group
-        id="input-group-3"
+        id="input-group-content"
         label="Content"
-        label-for="input-3">
+        label-for="input-content">
         <b-form-textarea :class="$v.formData.content.$error"
-          id="input-3"
+          id="input-content"
           v-model="formData.content"
           rows="5"
           placeholder="Enter content"
@@ -53,11 +53,11 @@
       </b-form-group>
       <!-- Image URL -->
       <b-form-group
-        id="input-group-4"
+        id="input-group-imgUrl"
         label="Image URL"
-        label-for="input-4">
+        label-for="input-imgUrl">
         <b-form-input
-          id="input-4"
+          id="input-imgUrl"
           v-model="formData.imgurl"
           type="text"
           placeholder="Enter image URL">
@@ -65,11 +65,11 @@
       </b-form-group>
       <!-- Image Alt -->
       <b-form-group
-        id="input-group-5"
+        id="input-group-imgAlt"
         label="Image alt-tag"
-        label-for="input-5">
+        label-for="input-imgAlt">
         <b-form-input
-          id="input-5"
+          id="input-imgAlt"
           v-model="formData.imgalt"
           type="text"
           placeholder="Enter image alt-tag">

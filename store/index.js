@@ -209,7 +209,6 @@ export const actions = {
           formData.idToken = data.token
           commit('setError', '') 
           commit('login', formData)
-          console.log(data)
         })
         .catch(err => {
           commit('setError', err.response.data)
