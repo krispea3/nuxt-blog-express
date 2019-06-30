@@ -54,7 +54,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.NODE_ENV === 'development' ?'http://localhost:3000' :'https://herokudomain',
     credentials: false
   },
   /*
@@ -70,7 +70,6 @@ module.exports = {
 
   env: {
     FB_API_KEY: 'AIzaSyC7ItGWr8uZpRAHrGC8_qztVg8QxMulzZE',
-    DATABASE_URL: 'postgres://localhost:5432/blog'
   },
 
   router: {

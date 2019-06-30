@@ -1,4 +1,5 @@
 const promise = require('bluebird');
+const connection = require('./.config');
 const options = {
   // Initialization Options
   promiseLib: promise
@@ -10,8 +11,8 @@ const bcrypt = require('bcrypt');
 const SECRET_KEY = "secretkey050440";
 const saltRounds = 10;
 
-const cn = 'postgres://chris:phils33@localhost:5432/blog';
-const db = pgp(cn); // database instance;
+// const cn = 'postgres://chris:phils33@localhost:5432/blog';
+const db = pgp(connection.cn); // database instance;
 
 // Users
 const getUsers = (req, res, next) => {
