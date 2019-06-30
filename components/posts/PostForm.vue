@@ -82,28 +82,31 @@
 
       <b-alert v-if="error" variant="danger" show>{{ error }}</b-alert>
 
-      <b-button
-        :disabled="$v.formData.$invalid"
-        @click="saveForm" 
-        variant="success">
-          Save
-          <b-spinner v-if="isSaving" small></b-spinner>
-      </b-button>
-      <b-button 
-        type="reset"
-        variant="primary">
-          Reset
-      </b-button>
-      <b-button v-if="post" 
-        @click="deletePost" 
-        variant="danger">
-          Delete
-        <b-spinner v-if="isDeleting" small></b-spinner>
-      </b-button>
-      <b-button
-        @click="$router.go(-1)">
-          Cancel
-      </b-button>
+      <div class="mt-3">
+        <b-button
+          :disabled="$v.formData.$invalid"
+          @click="saveForm" 
+          variant="success">
+            Save
+            <b-spinner v-if="isSaving" small></b-spinner>
+        </b-button>
+        <b-button 
+          type="reset"
+          variant="primary">
+            Reset
+        </b-button>
+        <b-button v-if="post" 
+          @click="deletePost" 
+          variant="danger">
+            Delete
+          <b-spinner v-if="isDeleting" small></b-spinner>
+        </b-button>
+        <b-button
+          @click="$router.go(-1)">
+            Cancel
+        </b-button>
+      </div>
+      
     </b-form>
   </div>
 </template>

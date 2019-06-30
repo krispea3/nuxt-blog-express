@@ -66,9 +66,12 @@ export default {
     filteredPosts () {
       const search = this.$store.getters.searchString
       const userId = this.$store.getters.user._id
-      // Display all posts when no search and not Admin page
+      // Display non-draft/non-published posts when no search and not Admin page
       if (search === '' & !this.isAdmin) {
-        return this.posts
+        const noDraft = this.posts.filter(el => {
+          return el.draft === false & el.published === true
+        })
+        return noDraft
       }
       // Display only posts from logged in User in admin section
       let filteredPosts = []
@@ -88,6 +91,7 @@ export default {
       }
       return displayPosts
     },
+    
     selectedDisplayType () {
       return this.displayType
     }
