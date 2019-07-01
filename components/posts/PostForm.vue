@@ -162,8 +162,9 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           imgalt: '',
           draft: false,
           published: true,
-          firstname: '',
-          surname: '',
+          userid: this.$store.getters.user._id,
+          firstname: this.$store.getters.user.firstname,
+          surname: this.$store.getters.user.surname,
           created: null,
           updated: null
         },
@@ -195,7 +196,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
       saveForm () {
         this.isSaving = true
         this.formData.updated = new Date()
-        const user = this.$store.getters.user
         if (!this.post) {
           this.formData.created = new Date()
         }
@@ -208,6 +208,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.content = ''
         this.formData.imgurl = ''
         this.formData.imgalt = ''
+        this.formData.img = null
         // Trick to reset/clear native browser form validation state
         // this.show = false
         // this.$nextTick(() => {

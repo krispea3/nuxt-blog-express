@@ -1,3 +1,5 @@
+var FormData = require('form-data')
+
 export const state = () => ({
   posts: [],
   user: {},
@@ -124,13 +126,21 @@ export const actions = {
       // )
   },
   addPost ({ commit, state }, formData) {
-    formData.userid = state.user._id
+    let form = new FormData();
+    form.append('title', formData.title)
+    form.append('description', formData.description)
+    form.append('content', formData.content)
+    form.append('imgurl', formData.imgurl)
+    form.append('img', formData.img)
+    form.append('imgalt', formData.imgalt)
+    form.append('draft', formData.draft)
+    form.append('published', formData.published)
+    form.append('userid', formData.userid)
+    form.append('created', formData.created)
     return (
-      this.$axios.$post('/api/post', formData)
+      this.$axios.$post('/api/post', form)
         .then((data) => {
           formData._id = data.postid
-          formData.firstname = state.user.firstname
-          formData.surname = state.user.surname     
           commit('setError', '')
           commit('addPostToPosts', formData)
         })

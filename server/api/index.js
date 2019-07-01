@@ -1,7 +1,9 @@
 const express = require('express')
 const db = require('../db/index')
+const multer  = require('multer')
 
 const router = express.Router()
+const upload = multer()
 
 // Routing
 router.post('/track-data', (req, res) => {
@@ -17,8 +19,9 @@ router.put('/user', db.updateUser)
 // Posts
 router.get('/posts', db.getPosts)
 router.get('/post/:id', db.getPost)
-router.post('/post', db.addPost)
-router.put('/post/:id', db.updatePost)
+  // multipart request. Use multer to split fields into res.body and imageFile into res.file
+router.post('/post', upload.single('img'), db.addPost)
+router.put('/post/:id', upload.single('img'), db.updatePost)
 router.delete('/post/:id', db.deletePost)
 
 module.exports = {
