@@ -187,7 +187,8 @@ const getPost = (req, res, next) => {
 }
 
 const addPost = (req, res, next) => {
-  db.one('INSERT INTO posts(title, description, content, imgurl, img, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${body.imgurl}, ${file.buffer}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id', req)
+  console.log(req.file)
+  db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${file.filename}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id', req)
     .then((data) => {
       return (
         res.status(200).json({
@@ -241,5 +242,5 @@ module.exports = {
   getPost,
   addPost,
   updatePost,
-  deletePost
+  deletePost,
 }

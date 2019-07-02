@@ -70,6 +70,7 @@ module.exports = {
 
   env: {
     FB_API_KEY: 'AIzaSyC7ItGWr8uZpRAHrGC8_qztVg8QxMulzZE',
+    baseURL: 'http://localhost:3000'
   },
 
   router: {

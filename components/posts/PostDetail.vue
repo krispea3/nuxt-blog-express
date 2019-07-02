@@ -3,7 +3,7 @@
 
         <b-card-img v-if="!isPreview"
           class="mb-3"
-          :src="post.imgurl" 
+          :src="imgUrl"
           :alt="post.imgalt"
           img-top>
         </b-card-img>
@@ -67,6 +67,12 @@ export default {
     isPreview: {
       type: Boolean,
       required: false
+    }
+  },
+  computed: {
+    imgUrl () {
+      console.log('computed: ', process.env.baseURL +'server/api/uploads/' + this.post.imgurl)
+      return process.env.baseURL +'/api/image/' + this.post.imgurl
     }
   },
   methods: {

@@ -140,13 +140,16 @@ export const actions = {
     return (
       this.$axios.$post('/api/post', form)
         .then((data) => {
+          console.log('post data', data)
           formData._id = data.postid
           commit('setError', '')
           commit('addPostToPosts', formData)
         })
         .catch(err => {
-          commit('setError', 'Post not added. Please try again later')
-          console.log(err.data)
+          // commit('setError', 'Post not added. Please try again later')
+          commit('setError', err.response.data.error.message)
+          console.log('post err', err.response.data.error.message)
+          console.error(err.response)
         })
       // this.$axios.$post('/post.json' + '?auth=' + state.user.idToken, formData)
       //   .then(data => {
