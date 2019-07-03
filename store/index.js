@@ -129,13 +129,12 @@ export const actions = {
         // })         
       // )
   },
-  addPost ({ commit, state }, formData) {
+  addPost ({ commit }, formData) {
     let form = new FormData();
     form.append('title', formData.title)
     form.append('description', formData.description)
     form.append('content', formData.content)
-    form.append('imgurl', formData.imgurl)
-    form.append('img', formData.img)
+    form.append('imgUpload', formData.imgUpload)
     form.append('imgalt', formData.imgalt)
     form.append('draft', formData.draft)
     form.append('published', formData.published)
@@ -145,7 +144,11 @@ export const actions = {
       this.$axios.$post('/api/post', form)
         .then((data) => {
           console.log('post data', data)
+          delete formData['imgUpload']
           formData._id = data.postid
+          formData.img_name = data.file.name
+          formData.img_original_name = data.file.originalName
+          console.log(formData)
           commit('setError', '')
           commit('addPostToPosts', formData)
         })
@@ -155,14 +158,6 @@ export const actions = {
           console.log('post err', err.response.data.error.message)
           console.error(err.response)
         })
-      // this.$axios.$post('/post.json' + '?auth=' + state.user.idToken, formData)
-      //   .then(data => {
-      //     commit('setError', '')
-      //     commit('addPostToPosts', {formData: formData, id: data.name})
-      //   })
-      //   .catch(err => {
-      //     commit('setError', 'Cannot add post. Try again later')
-      //   })
     )
   },
   updatePost ({ commit, state }, post) {

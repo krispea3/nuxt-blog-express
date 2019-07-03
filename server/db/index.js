@@ -156,7 +156,7 @@ const updateUser = (req, res, next) => {
 
 // Posts
 const getPosts = (req, res, next) => {
-  db.any('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.img, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts.userid = users._id', [true])
+  db.any('SELECT posts._id, posts.title, posts.description, posts.content, posts.img_name, posts.img_original_name, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts.userid = users._id', [true])
     .then(data => {
       return (
         res.status(200).json({
@@ -172,7 +172,7 @@ const getPosts = (req, res, next) => {
 }
 
 const getPost = (req, res, next) => {
-  db.one('SELECT posts._id, posts.title, posts.description, posts.content, posts.imgurl, posts.img, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts._id=${id} AND posts.userid = users._id', req.params)
+  db.one('SELECT posts._id, posts.title, posts.description, posts.content, posts.img_name, posts.img_original_name, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts._id=${id} AND posts.userid = users._id', req.params)
     .then(data => {
       res.status(200).json({
         status: 'success',
@@ -187,13 +187,17 @@ const getPost = (req, res, next) => {
 }
 
 const addPost = (req, res, next) => {
-  console.log(req.file)
-  db.one('INSERT INTO posts(title, description, content, imgurl, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${file.filename}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id', req)
+  if (!req.file) {
+    const file = {filename: '', originalname: ''}
+    req.file = file
+  }
+  db.one('INSERT INTO posts(title, description, content, img_name, img_original_name, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${file.filename}, ${file.originalname}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id', req)
     .then((data) => {
       return (
         res.status(200).json({
           status: 'success',
           postid: data._id,
+          file: {name: req.file.filename, originalName: req.file.originalname},
           message: 'Post added'
         })
       )
@@ -205,10 +209,15 @@ const addPost = (req, res, next) => {
 }
 
 const updatePost = (req, res, next) => {
-  db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, imgurl=${body.imgurl}, img={file.buffer}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published}, updated=${body.updated} WHERE _id=${_id}', req)
+  if (!req.file) {
+    const file = {filename: req.body.img_name, originalname: req.body.img_original_name}
+    req.file = file
+  }
+  db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, img_name=${file.img_name}, img_original_name={file.img_original_name}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published}, updated=${body.updated} WHERE _id=${_id}', req)
     .then(() => {
       res.status(202).json({
         status: 'success',
+        file: {name: req.file.filename, originalName: req.file.originalname},
         message: 'Post updated'
       })
     })

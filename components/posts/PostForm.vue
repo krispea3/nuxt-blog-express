@@ -51,33 +51,44 @@
           <span class="error" v-if="!$v.formData.content.required">Content is required</span>
         </div>
       </b-form-group>
-      <!-- Image URL -->
+      <!-- Image original name -->
       <b-form-group
-        id="input-group-imgUrl"
-        label="Image URL"
-        label-for="input-imgUrl">
+        id="input-group-img_original_name"
+        label="Image original name"
+        label-for="input-img_original_name">
         <b-form-input
-          id="input-imgUrl"
-          v-model="formData.imgurl"
+          v-model="formData.img_original_name"
+          id="input-img_original_name"
           type="text"
-          placeholder="Enter image URL">
+          placeholder="img_original_name">
         </b-form-input>
       </b-form-group>
-      <!-- Image Upload -->
+      <!-- Image saved name -->
+      <b-form-group
+        id="input-group-img_name"
+        label="Image saved name"
+        label-for="input-img_name">
+        <b-form-input
+          v-model="formData.img_name"
+          id="input-img_name"
+          type="text"
+          placeholder="img_name">
+        </b-form-input>
+      </b-form-group>
+
+      <!-- Image Upload :state="Boolean(formData.imgUpload)"-->
       <b-form-group
         id="input-group-imgUpload"
         label="Upload image"
         label-for="input-imgUpload">
         <b-form-file
-          id="input-imgUpload"
-          v-model="formData.img"
-          :state="Boolean(formData.img)"
+          id="input-img_name"
+          v-model="formData.imgUpload"
           placeholder="Choose a file..."
           drop-placeholder="Drop file here..."
         >
         </b-form-file>
       </b-form-group>
-      <p>{{ formData.img }}</p>
 
       <!-- Image Alt -->
       <b-form-group
@@ -136,8 +147,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.title = this.post.title
         this.formData.description = this.post.description
         this.formData.content = this.post.content
-        this.formData.imgurl = this.post.imgurl
-        this.formData.img = this.post.img
+        this.formData.img_name = this.post.img_name
+        this.formData.img_original_name = this.post.img_original_name
         this.formData.imgalt = this.post.imgalt
         this.formData.draft = this.post.draft
         this.formData.published = this.post.published
@@ -155,8 +166,9 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           title: '',
           description: '',
           content: '',
-          imgurl: '',
-          img: null,
+          img_name: '',
+          img_original_name: '',
+          imgUpload: null,
           imgalt: '',
           draft: false,
           published: true,
@@ -209,7 +221,9 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         // Reset our form values
         this.formData.text = ''
         this.formData.content = ''
-        this.formData.imgurl = ''
+        this.formData.img_name = ''
+        this.formData.img_original_name = ''
+        this.formData.imgUpload = null
         this.formData.imgalt = ''
         this.formData.img = null
         // Trick to reset/clear native browser form validation state

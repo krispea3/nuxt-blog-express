@@ -71,8 +71,7 @@ export default {
   },
   computed: {
     imgUrl () {
-      console.log('computed: ', process.env.baseURL +'server/api/uploads/' + this.post.imgurl)
-      return process.env.baseURL +'/api/image/' + this.post.imgurl
+      return process.env.baseURL +'/api/image/' + this.post.img_name
     }
   },
   methods: {

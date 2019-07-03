@@ -40,8 +40,8 @@ router.put('/user', db.updateUser)
 router.get('/posts', db.getPosts)
 router.get('/post/:id', db.getPost)
   // multipart request. Use multer to split fields into res.body and imageFile into res.file
-router.post('/post', upload.single('img'), db.addPost)
-router.put('/post/:id', upload.single('img'), db.updatePost)
+router.post('/post', upload.single('imgUpload'), db.addPost)
+router.put('/post/:id', upload.single('imgUpload'), db.updatePost)
 
 router.delete('/post/:id', db.deletePost)
 // Images
