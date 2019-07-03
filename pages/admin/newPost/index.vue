@@ -15,8 +15,8 @@ export default {
     }
   },
   methods: {
-    onSave (formData) {
-      this.$store.dispatch('addPost', formData)
+    onSave (payload) {
+      this.$store.dispatch('addPost', payload)
       // The addPost action returns the axios promise. So we will enter .then when axios wrote the data to firebase
         .then(() => {
           this.$store.dispatch('isLoading', null)

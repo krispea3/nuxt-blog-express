@@ -129,12 +129,14 @@ export const actions = {
         // })         
       // )
   },
-  addPost ({ commit }, formData) {
+  addPost ({ commit }, payload) {
+    const formData = payload.formData
+    const img_upload = payload.img_upload
     let form = new FormData();
     form.append('title', formData.title)
     form.append('description', formData.description)
     form.append('content', formData.content)
-    form.append('imgUpload', formData.imgUpload)
+    form.append('img_upload', img_upload)
     form.append('imgalt', formData.imgalt)
     form.append('draft', formData.draft)
     form.append('published', formData.published)
@@ -143,12 +145,9 @@ export const actions = {
     return (
       this.$axios.$post('/api/post', form)
         .then((data) => {
-          console.log('post data', data)
-          delete formData['imgUpload']
           formData._id = data.postid
           formData.img_name = data.file.name
           formData.img_original_name = data.file.originalName
-          console.log(formData)
           commit('setError', '')
           commit('addPostToPosts', formData)
         })

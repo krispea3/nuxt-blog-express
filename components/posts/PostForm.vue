@@ -76,14 +76,14 @@
         </b-form-input>
       </b-form-group>
 
-      <!-- Image Upload :state="Boolean(formData.imgUpload)"-->
+      <!-- Image Upload :state="Boolean(formData.img_upload)"-->
       <b-form-group
-        id="input-group-imgUpload"
+        id="input-group-img_upload"
         label="Upload image"
-        label-for="input-imgUpload">
+        label-for="input-img_upload">
         <b-form-file
-          id="input-img_name"
-          v-model="formData.imgUpload"
+          id="input-img_upload"
+          v-model="img_upload"
           placeholder="Choose a file..."
           drop-placeholder="Drop file here..."
         >
@@ -168,7 +168,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           content: '',
           img_name: '',
           img_original_name: '',
-          imgUpload: null,
           imgalt: '',
           draft: false,
           published: true,
@@ -178,6 +177,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           created: null,
           updated: null
         },
+        img_upload: null,
       }
     },
     validations: {
@@ -214,7 +214,11 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         if (!this.post) {
           this.formData.created = new Date()
         }
-        this.$emit('onSave', this.formData)
+        const payload = {
+          formData: this.formData,
+          img_upload: this.img_upload
+        }
+        this.$emit('onSave', payload)
       },
       onReset(evt) {
         evt.preventDefault()
@@ -223,9 +227,8 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.content = ''
         this.formData.img_name = ''
         this.formData.img_original_name = ''
-        this.formData.imgUpload = null
         this.formData.imgalt = ''
-        this.formData.img = null
+        this.img_upload = null
         // Trick to reset/clear native browser form validation state
         // this.show = false
         // this.$nextTick(() => {
