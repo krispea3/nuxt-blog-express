@@ -48,6 +48,7 @@ export default {
       this.$store.dispatch('updatePost', formData)
       // The updatePost action returns the axios promise. So we will enter .then when axios wrote the data to firebase
         .then(() => {
+          this.$store.dispatch('isLoading', null)
           if (!this.error) {
            this.$router.push('/admin')
           }
@@ -56,6 +57,7 @@ export default {
     onDelete () {
       this.$store.dispatch('deletePost', +this.$route.params.id)
         .then(() => {
+          this.$store.dispatch('isLoading', null)
           this.$router.push('/admin')
         })
     }

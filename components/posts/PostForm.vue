@@ -104,7 +104,7 @@
           @click="saveForm" 
           variant="success">
             Save
-            <b-spinner v-if="isSaving" small></b-spinner>
+            <b-spinner v-if="isLoading.includes('save')" small></b-spinner>
         </b-button>
         <b-button 
           type="reset"
@@ -115,7 +115,7 @@
           @click="deletePost" 
           variant="danger">
             Delete
-          <b-spinner v-if="isDeleting" small></b-spinner>
+          <b-spinner v-if="isLoading.includes('delete')" small></b-spinner>
         </b-button>
         <b-button
           @click="$router.go(-1)">
@@ -151,8 +151,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
     },
     data() {
       return {
-        isSaving: false,
-        isDeleting: false,
         formData: {
           title: '',
           description: '',
@@ -192,9 +190,14 @@ import { required, maxLength } from 'vuelidate/lib/validators'
       },
       error: String
     },
+    computed: {
+      isLoading () {
+        return this.$store.getters.isLoading
+      }
+    },
     methods: {
       saveForm () {
-        this.isSaving = true
+        this.$store.dispatch('isLoading', 'save')
         this.formData.updated = new Date()
         if (!this.post) {
           this.formData.created = new Date()
@@ -216,7 +219,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         // })
       },
       deletePost () {
-        this.isDeleting = true
+        this.$store.dispatch('isLoading', 'delete')
         this.$emit('onDelete')
       }
     }

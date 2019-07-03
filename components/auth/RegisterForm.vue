@@ -95,14 +95,14 @@
         :disabled="$v.form.$invalid"
         variant="success">
           Register
-        <b-spinner v-if="isLoading" small></b-spinner>
+        <b-spinner v-if="isLoading.includes('register')" small></b-spinner>
       </b-button>
       <b-button v-if="user"
         @click="updateUser"
         :disabled="$v.form.$invalid"
         variant="success">
           Save
-        <b-spinner v-if="isLoading" small></b-spinner>
+        <b-spinner v-if="isLoading.includes('update')" small></b-spinner>
       </b-button>
             <b-button
         @click="$router.go(-1)">
@@ -182,14 +182,14 @@ export default {
   methods: {
     register () {
       delete this.form['confirmPassword']
-      this.$store.dispatch('isLoading', true)
+      this.$store.dispatch('isLoading', 'register')
       this.$emit('register', this.form)
     },
     updateUser () {
       // remove password from the form
       delete this.form['password']
       delete this.form['confirmPassword']
-      this.$store.dispatch('isLoading', true)
+      this.$store.dispatch('isLoading', 'update')
       this.$emit('updateUser', this.form)
     }
   }

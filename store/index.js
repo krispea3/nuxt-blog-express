@@ -4,7 +4,7 @@ export const state = () => ({
   posts: [],
   user: {},
   error: '',
-  isLoading: false,
+  isLoading: [],
   searchString: ''
 })
 
@@ -37,7 +37,7 @@ export const mutations = {
   logout (state) {
     state.user = {}
     state.error = ''
-    state.isLoading = false
+    state.isLoading = []
   },
   loadUser (state, user) {
     state.user = user
@@ -48,8 +48,12 @@ export const mutations = {
   setError (state, msg) {
     state.error = msg
   },
-  isLoading (state, status) {
-    state.isLoading = status
+  isLoading (state, element) {
+    if (element) {
+      state.isLoading.push(element)
+    } else {
+      state.isLoading = []
+    }
   },
   setSearchString (state, searchString) {
     state.searchString = searchString
@@ -427,8 +431,8 @@ export const actions = {
       alert("Your session has expired! Login again")  
     }, duration)
   },
-  isLoading ({ commit }, status) {
-    commit('isLoading', status)
+  isLoading ({ commit }, element) {
+    commit('isLoading', element)
   },
   setSearchString ({ commit }, searchValue) {
     commit('setSearchString', searchValue)

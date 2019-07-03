@@ -25,7 +25,7 @@ export default {
     login (form) {
       this.$store.dispatch('login', form)
         .then( () => {
-          this.$store.dispatch('isLoading', false)
+          this.$store.dispatch('isLoading', null)
           if (!this.error) {
             this.$router.push('/admin')
           }
@@ -34,7 +34,7 @@ export default {
     register (form) {
       this.$store.dispatch('register', form)
         .then( () => {
-          this.$store.dispatch('isLoading', false)
+          this.$store.dispatch('isLoading', null)
           if (!this.error) {
             this.$router.push('/admin')
           }
