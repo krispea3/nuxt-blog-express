@@ -4,21 +4,26 @@ const multer  = require('multer')
 
 const router = express.Router()
 
-
+// Multer definition
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'server/api/uploads')
   },
   filename: function (req, file, cb) {
     console.log('filename file: ', file)
-    // const ext = file.originalname.split('.').pop()
+    const fileType = file.mimetype
+    if (!fileType.includes('image')) {
+      console.log('File type not image')
+      cb(new Error('Invalid file type. File is not an image! (Accepted: jpg, jpeg, bmp, gif)'))
+    }
+    console.log('fileType: ', fileType)
     const ext = file.originalname.slice((file.originalname.lastIndexOf(".") - 1 >>> 0) + 2)
     console.log('extension: ', ext)
-    if (ext) {
+    if (ext === 'jpg' || ext === 'jpeg' || ext === 'bmp' || ext === 'gif') {
       cb(null, file.fieldname + '-' + Date.now() + '.' + ext)
     } else {
       console.log('No Extension')
-      cb(new Error('Image has missing/invalid file extension (accepted: jpg,jpeg,bmp)'))
+      cb(new Error('Image has missing/invalid file extension (Accepted: jpg, jpeg, bmp, gif)'))
     }
   }
 }) 
