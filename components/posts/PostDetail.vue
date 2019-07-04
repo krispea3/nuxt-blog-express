@@ -43,6 +43,16 @@
             Edit
           <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
         </b-button>
+
+        <b-button v-if="isAdmin & isPreview"
+          class="ml-3"
+          @click="postDelete(post._id)" 
+          variant="danger"
+          size="sm">
+            Delete
+          <b-spinner v-if="isLoading.includes(post.id & 'delete')" small></b-spinner>
+        </b-button>
+
         </div>
         
         <div slot="footer">
@@ -86,6 +96,14 @@ export default {
     postEdit (id) {
       this.isLoading.push(id)
       this.$router.push('admin/' + id)
+    },
+    postDelete (id) {
+      const isDelete = confirm('Permanently delete post "' + this.post.title + '"?')
+      if (isDelete) {
+        this.isLoading.push(id, 'delete')
+        const payload = {id: id, image: this.post.img_name}
+        this.$store.dispatch('deletePost', payload)
+      }
     },
     goBack () {
       this.$router.go(-1)

@@ -73,7 +73,7 @@ export const actions = {
         .then(data => {
           vuexContext.commit('loadPosts', data.posts)
           // Loading user from cookies
-          if (context.req.headers.cookie.token) {
+          if (context.req.headers.cookie) {
             const userid = context.app.$cookies.get('user')
             return(
               context.app.$axios.$get('/api/user/' + userid)
