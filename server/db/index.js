@@ -213,7 +213,7 @@ const updatePost = (req, res, next) => {
     const file = {filename: req.body.img_name, originalname: req.body.img_original_name}
     req.file = file
   }
-  db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, img_name=${file.img_name}, img_original_name={file.img_original_name}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published}, updated=${body.updated} WHERE _id=${_id}', req)
+  db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, img_name=${file.filename}, img_original_name=${file.originalname}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published} WHERE _id=${params.id}', req)
     .then(() => {
       res.status(202).json({
         status: 'success',

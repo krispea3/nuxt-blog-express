@@ -28,7 +28,7 @@ export const mutations = {
     })
   },
   deletePostInPosts (state, id) {
-    const index = state.posts.findIndex(i => i.id === id)
+    const index = state.posts.findIndex(i => i._id === id)
     state.posts.splice(index, 1)
   },
   login (state, user) {
@@ -159,16 +159,42 @@ export const actions = {
         })
     )
   },
-  updatePost ({ commit, state }, post) {
-    post.updated = new Date().toISOString()
+  updatePost ({ commit, state }, payload) {
+    const formData = payload.formData
+    const img_upload = payload.img_upload
+    let form = new FormData()
+    form.append('title', formData.title)
+    form.append('description', formData.description)
+    form.append('content', formData.content)
+    form.append('img_name', formData.img_name)
+    form.append('img_original_name', formData.img_original_name)
+    form.append('img_upload', img_upload)
+    form.append('imgalt', formData.imgalt)
+    form.append('draft', formData.draft)
+    form.append('published', formData.published)
+    form.append('userid', formData.userid)
+    form.append('created', formData.created)
+    form.append('updated', formData.updated)
     return (
-      this.$axios.$put('/api/post/' + post._id, post)
-        .then(() => {
+      this.$axios.$put('/api/post/' + formData._id, form)
+        .then((data) => {
+          // Delete old image when image updated
+          if (img_upload & formData.img_name != '') {
+            return this.$axios.$delete('/api/image/' + formData.img_name)
+              .then(() => {
+                return console.log('Old image removed')
+              })
+              .catch(err => {
+                return console.log(err.response)
+              })
+          }
+          formData.img_name = data.file.name
+          formData.img_original_name = data.file.originalName
           commit('setError', '')
-          commit('updatePostInPosts', post)
+          commit('updatePostInPosts', formData)
         })
         .catch(err => {
-          commit('setError', 'Cannot update post. Please try again later')
+          commit('setError', err.response.data.error.message)
           return console.log(err)
         })
     )

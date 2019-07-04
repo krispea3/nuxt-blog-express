@@ -51,32 +51,7 @@
           <span class="error" v-if="!$v.formData.content.required">Content is required</span>
         </div>
       </b-form-group>
-      <!-- Image original name -->
-      <b-form-group
-        id="input-group-img_original_name"
-        label="Image original name"
-        label-for="input-img_original_name">
-        <b-form-input
-          v-model="formData.img_original_name"
-          id="input-img_original_name"
-          type="text"
-          placeholder="img_original_name">
-        </b-form-input>
-      </b-form-group>
-      <!-- Image saved name -->
-      <b-form-group
-        id="input-group-img_name"
-        label="Image saved name"
-        label-for="input-img_name">
-        <b-form-input
-          v-model="formData.img_name"
-          id="input-img_name"
-          type="text"
-          placeholder="img_name">
-        </b-form-input>
-      </b-form-group>
-
-      <!-- Image Upload :state="Boolean(formData.img_upload)"-->
+      <!-- Image Upload -->
       <b-form-group
         id="input-group-img_upload"
         label="Upload image"
@@ -88,6 +63,7 @@
           drop-placeholder="Drop file here..."
         >
         </b-form-file>
+        <p :style="{color: 'green'}" v-if="formData.img_original_name != ''">Uploaded image: {{ formData.img_original_name }}</p>
       </b-form-group>
 
       <!-- Image Alt -->
@@ -149,6 +125,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.content = this.post.content
         this.formData.img_name = this.post.img_name
         this.formData.img_original_name = this.post.img_original_name
+        this.img_upload = null
         this.formData.imgalt = this.post.imgalt
         this.formData.draft = this.post.draft
         this.formData.published = this.post.published

@@ -16,7 +16,6 @@ export default {
   //   this.$store.dispatch('setPost', this.$route.params.id)
   // },
   asyncData (context) {
-    console.log(context.params)
     return (
       context.app.$axios.$get('/api/post/' + context.params.id)
         .then(data => {

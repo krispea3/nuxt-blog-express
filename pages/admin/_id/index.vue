@@ -43,9 +43,9 @@ export default {
     PostForm
   },
   methods: {
-    onSave (formData) {
-      formData._id = +this.$route.params.id
-      this.$store.dispatch('updatePost', formData)
+    onSave (payload) {
+      payload.formData._id = +this.$route.params.id
+      this.$store.dispatch('updatePost', payload)
       // The updatePost action returns the axios promise. So we will enter .then when axios wrote the data to firebase
         .then(() => {
           this.$store.dispatch('isLoading', null)

@@ -11,19 +11,14 @@ const storage = multer.diskStorage({
     cb(null, 'server/api/uploads')
   },
   filename: function (req, file, cb) {
-    console.log('filename file: ', file)
     const fileType = file.mimetype
     if (!fileType.includes('image')) {
-      console.log('File type not image')
       cb(new Error('Invalid file type. File is not an image! (Accepted: jpg, jpeg, bmp, gif)'))
     }
-    console.log('fileType: ', fileType)
     const ext = file.originalname.slice((file.originalname.lastIndexOf(".") - 1 >>> 0) + 2)
-    console.log('extension: ', ext)
     if (ext === 'jpg' || ext === 'jpeg' || ext === 'bmp' || ext === 'gif') {
       cb(null, file.fieldname + '-' + Date.now() + '.' + ext)
     } else {
-      console.log('No Extension')
       cb(new Error('Image has missing/invalid file extension (Accepted: jpg, jpeg, bmp, gif)'))
     }
   }
@@ -46,13 +41,11 @@ router.put('/post/:id', upload.single('img_upload'), db.updatePost)
 router.delete('/post/:id', db.deletePost)
 // Images
 router.get('/image/:file', function(req, res, next) {
-  console.log('req.params', req.params)
-  console.log(__dirname + '/uploads/' + req.params.file)
-  // res.set('Content-Type', 'image/jpeg')
-  // res.sendFile(path.resolve(path.resolve(__dirname, '/uploads/' + req.params.file)))
   res.sendFile(__dirname + '/uploads/' + req.params.file), function(err) {
-    console.log('res.headers inside sendFile: ', res.sentHeaders)
-    console.log('error inside sendFile', err)
+    if (err) {
+      console.log('Error in sendFile image: ', err)
+      throw new Error('Cannot find image')
+    }
   }
 })
 router.delete('/image/:name', function(req,res) {
