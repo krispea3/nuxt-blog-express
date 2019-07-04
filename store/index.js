@@ -3,6 +3,7 @@ var FormData = require('form-data')
 export const state = () => ({
   posts: [],
   user: {},
+  postsView: 'list', //'list' or 'card'
   error: '',
   isLoading: [],
   searchString: ''
@@ -30,6 +31,9 @@ export const mutations = {
   deletePostInPosts (state, id) {
     const index = state.posts.findIndex(i => i._id === id)
     state.posts.splice(index, 1)
+  },
+  setPostsView (state, viewType) {
+    state.postsView = viewType
   },
   login (state, user) {
     state.user = user
@@ -232,6 +236,9 @@ export const actions = {
     //       commit('setError', 'Error deleting the post. Try again later')
     //     })
     // )
+  },
+  setPostsView ({ commit }, viewType) {
+    commit('setPostsView', viewType)
   },
   register ({ commit, dispatch }, formData) {
     // Write user in postgres database
@@ -485,6 +492,9 @@ export const getters = {
     } else {
       return false
     }
+  },
+  postsView (state) {
+    return state.postsView
   },
   error (state) {
     return state.error

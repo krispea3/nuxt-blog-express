@@ -4,12 +4,11 @@
     <div v-if="selectedDisplayType === 'card'">
       <b-row class="mb-3" no-gutters align-h="center">
         <b-col cols="12">
-          <Header
-            :selected="displayType"
-            @displayType="setDisplayType" />
+          <Header />
       </b-col>
       </b-row>
       <b-row no-gutters align-h="center">
+        <b-col cols="12">
         <b-card-group deck>
         <div  v-for="post in filteredPosts" :key="post._id">
           <PostDetail
@@ -19,21 +18,20 @@
           </PostDetail>
         </div>
         </b-card-group>
+        </b-col>
       </b-row>
     </div>
     
     <!-- Display posts as list -->
     <div v-if="selectedDisplayType === 'list'">
       <b-row class="mb-3" no-gutters align-h="center">
-        <b-col cols="10">
-          <Header
-            :selected="displayType"
-            @displayType="setDisplayType"/>
+        <b-col cols="12">
+          <Header />
         </b-col>
       </b-row>
       <div  v-for="post in filteredPosts" :key="post._id">
         <b-row no-gutters align-h="center">
-          <b-col cols="10">
+          <b-col cols="12">
           <PostDetail
             :isPreview="true" 
             :isAdmin="isAdmin" 
@@ -58,8 +56,8 @@ export default {
   },
   data () {
     return {
-      posts: [],
-      displayType: 'card'
+      posts: []
+      // displayType: 'card'
     }
   },
   computed: {
@@ -93,7 +91,8 @@ export default {
     },
     
     selectedDisplayType () {
-      return this.displayType
+      // return this.displayType
+      return this.$store.getters.postsView
     }
   },
   components: {
@@ -107,10 +106,10 @@ export default {
       required: true
     },
   },
-  methods: {
-    setDisplayType (type) {
-      this.displayType = type
-    }
-  }
+  // methods: {
+  //   setDisplayType (type) {
+  //     this.displayType = type
+  //   }
+  // }
 }
 </script>

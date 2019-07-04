@@ -6,18 +6,18 @@
       </b-col>
       <b-row align-v="end" align-h="start" no-gutters>
         <b-col>
-          <i
+          <i v-if="selected !=='list'"
             id="list" 
             class="material-icons"
             :class="{selected: selected==='list'}"
-            @click="displayType('list')">
-              view_headline
+            @click="setDisplayType('list')">
+              view_list
           </i>
-          <i
+          <i v-if="selected !=='card'"
             id="card" 
             class="material-icons"
             :class="{selected: selected==='card'}"
-            @click="displayType('card')">
+            @click="setDisplayType('card')">
               view_module
           </i>
         </b-col>
@@ -30,16 +30,24 @@
 import Search from '~/components/Search'
 
 export default {
-  props: {
-    selected: ''
+  computed: {
+    selected () {
+      return this.$store.getters.postsView
+    }
   },
+  // props: {
+  //   selected: ''
+  // },
   components: {
     Search
   },
   methods: {
-    displayType (type) {
-      this.$emit('displayType', type)
+    setDisplayType (type) {
+      this.$store.dispatch('setPostsView', type)
     }
+    // displayType (type) {
+    //   this.$emit('displayType', type)
+    // }
   }
 }
 </script>
