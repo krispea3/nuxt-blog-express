@@ -191,12 +191,12 @@ const addPost = (req, res, next) => {
     const file = {filename: '', originalname: ''}
     req.file = file
   }
-  db.one('INSERT INTO posts(title, description, content, img_name, img_original_name, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${file.filename}, ${file.originalname}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id', req)
+  db.one('INSERT INTO posts(title, description, content, img_name, img_original_name, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${file.filename}, ${file.originalname}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id, created', req)
     .then((data) => {
       return (
         res.status(200).json({
           status: 'success',
-          postid: data._id,
+          post: {id: data._id, created: data.created},
           file: {name: req.file.filename, originalName: req.file.originalname},
           message: 'Post added'
         })
@@ -213,10 +213,12 @@ const updatePost = (req, res, next) => {
     const file = {filename: req.body.img_name, originalname: req.body.img_original_name}
     req.file = file
   }
-  db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, img_name=${file.filename}, img_original_name=${file.originalname}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published} WHERE _id=${params.id}', req)
+  req.body.updated = new Date()
+  db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, img_name=${file.filename}, img_original_name=${file.originalname}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published}, updated=${body.updated} WHERE _id=${params.id}', req)
     .then(() => {
       res.status(202).json({
         status: 'success',
+        post: {updated: req.body.updated},
         file: {name: req.file.filename, originalName: req.file.originalname},
         message: 'Post updated'
       })

@@ -187,10 +187,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
     methods: {
       saveForm () {
         this.$store.dispatch('isLoading', 'save')
-        this.formData.updated = new Date()
-        if (!this.post) {
-          this.formData.created = new Date()
-        }
         const payload = {
           formData: this.formData,
           img_upload: this.img_upload

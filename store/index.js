@@ -104,11 +104,11 @@ export const actions = {
     form.append('draft', formData.draft)
     form.append('published', formData.published)
     form.append('userid', formData.userid)
-    form.append('created', formData.created)
     return (
       this.$axios.$post('/api/post', form)
         .then((data) => {
-          formData._id = data.postid
+          formData._id = data.post.id
+          formData.created = data.post.created
           formData.img_name = data.file.name
           formData.img_original_name = data.file.originalName
           commit('setError', '')
@@ -135,7 +135,6 @@ export const actions = {
     form.append('draft', formData.draft)
     form.append('published', formData.published)
     form.append('userid', formData.userid)
-    form.append('created', formData.created)
     form.append('updated', formData.updated)
     return (
       this.$axios.$put('/api/post/' + formData._id, form)
@@ -150,6 +149,7 @@ export const actions = {
                 return console.log(err.response)
               })
           }
+          formData.updated = data.post.updated
           formData.img_name = data.file.name
           formData.img_original_name = data.file.originalName
           commit('setError', '')
