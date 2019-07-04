@@ -1,6 +1,7 @@
 const express = require('express')
 const db = require('../db/index')
 const multer  = require('multer')
+const fs = require('fs')
 
 const router = express.Router()
 
@@ -42,7 +43,6 @@ router.get('/post/:id', db.getPost)
   // multipart request. Use multer to split fields into res.body and imageFile into res.file
 router.post('/post', upload.single('img_upload'), db.addPost)
 router.put('/post/:id', upload.single('img_upload'), db.updatePost)
-
 router.delete('/post/:id', db.deletePost)
 // Images
 router.get('/image/:file', function(req, res, next) {
@@ -54,6 +54,18 @@ router.get('/image/:file', function(req, res, next) {
     console.log('res.headers inside sendFile: ', res.sentHeaders)
     console.log('error inside sendFile', err)
   }
+})
+router.delete('/image/:name', function(req,res) {
+  fs.unlink(__dirname + '/uploads/' + req.params.name, function(err) {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        return console.log('Image not found')
+      }
+    } else {
+      res.status(200)
+      res.send('Image deleted')
+    }
+  })
 })
 
 module.exports = {

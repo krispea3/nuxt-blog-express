@@ -174,12 +174,22 @@ export const actions = {
     )
   },
 
-  deletePost ({ commit, state }, id) {
+  deletePost ({ commit }, payload) {
+    if (payload.image !== '') {
+      // Delete image on server when available
+      this.$axios.$delete('/api/image/' + payload.image)
+        .then(() => {
+          console.log('File deleted')
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
+    }
     return (
-      this.$axios.$delete('/api/post/' + id)
+      this.$axios.$delete('/api/post/' + payload.id)
         .then(() => {
           commit('setError', '')
-          commit('deletePostInPosts', id)
+          commit('deletePostInPosts', payload.id)
         })
         .catch(err => {
           commit('setError', 'Error deleting the post. Try again later')

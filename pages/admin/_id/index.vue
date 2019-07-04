@@ -54,8 +54,9 @@ export default {
           }
         })
     },
-    onDelete () {
-      this.$store.dispatch('deletePost', +this.$route.params.id)
+    onDelete (image) {
+      const payload = {id: +this.$route.params.id, image: image}
+      this.$store.dispatch('deletePost', payload)
         .then(() => {
           this.$store.dispatch('isLoading', null)
           this.$router.push('/admin')

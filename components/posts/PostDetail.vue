@@ -71,7 +71,11 @@ export default {
   },
   computed: {
     imgUrl () {
-      return process.env.baseURL +'/api/image/' + this.post.img_name
+      if (this.post.img_name) {
+        return process.env.baseURL +'/api/image/' + this.post.img_name
+      } else {
+        return ''
+      }
     }
   },
   methods: {

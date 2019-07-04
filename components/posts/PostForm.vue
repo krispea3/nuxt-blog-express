@@ -237,7 +237,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
       },
       deletePost () {
         this.$store.dispatch('isLoading', 'delete')
-        this.$emit('onDelete')
+        this.$emit('onDelete', this.formData.img_name)
       }
     }
       // onSubmit(evt) {
