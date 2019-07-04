@@ -73,10 +73,8 @@ export const actions = {
         .then(data => {
           vuexContext.commit('loadPosts', data.posts)
           // Loading user from cookies
-          if (context.req.headers.cookie) {
-            const token = context.app.$cookies.get('token')
+          if (context.req.headers.cookie.token) {
             const userid = context.app.$cookies.get('user')
-            const expirationDate = context.app.$cookies.get('expirationDate')
             return(
               context.app.$axios.$get('/api/user/' + userid)
                 .then(data => {
@@ -91,51 +89,12 @@ export const actions = {
         .catch(err => {
           return console.log(err)
         })
-    )
-    // return (
-      // Fetching posts
-      // context.app.$axios.$get('/post.json')
-      //   .then(data => {
-      //     const posts = []
-      //     for (const key in data) {
-      //       posts.push({...data[key], id: key})
-      //     }
-      //     vuexContext.commit('loadPosts', posts)
-      // Fetching user if cookie token available
-        //   if (context.req.headers.cookie) {
-        //     const token = context.app.$cookies.get('token')
-        //     const userEmail = context.app.$cookies.get('user')
-        //     const expirationDate = context.app.$cookies.get('expirationDate')
-        //     let user = {}
-        //     return context.app.$axios.$get('/users.json')
-        //       .then(data => {
-        //         for (let key in data) {
-        //           if (data[key].email === userEmail) {
-        //             user = data[key]
-        //             user.id = key
-        //             user.idToken = token
-        //             vuexContext.commit('loadUser', user)
-        //             vuexContext.commit('setError', '')
-        //             break
-        //           }
-        //         }    
-        //       })
-        //       .catch(err => {
-        //         vuexContext.commit('setError', 'Could not Autologin. Refresh the page or Login again')
-        //         return context.error(err)
-        //       })
-        //   } else {
-        //       return
-        //     }
-        // })
-        // .catch(err => {
-        //   return context.error(err)
-        // })         
-      // )
+    ) 
   },
   addPost ({ commit }, payload) {
     const formData = payload.formData
     const img_upload = payload.img_upload
+    // Using form-data module to handle mutipart file on server. We have formData and image file 
     let form = new FormData();
     form.append('title', formData.title)
     form.append('description', formData.description)
@@ -156,9 +115,7 @@ export const actions = {
           commit('addPostToPosts', formData)
         })
         .catch(err => {
-          // commit('setError', 'Post not added. Please try again later')
           commit('setError', err.response.data.error.message)
-          console.log('post err', err.response.data.error.message)
           console.error(err.response)
         })
     )
@@ -166,6 +123,7 @@ export const actions = {
   updatePost ({ commit, state }, payload) {
     const formData = payload.formData
     const img_upload = payload.img_upload
+    // Using form-data module to handle mutipart file on server. We have formData and image file 
     let form = new FormData()
     form.append('title', formData.title)
     form.append('description', formData.description)
@@ -199,11 +157,10 @@ export const actions = {
         })
         .catch(err => {
           commit('setError', err.response.data.error.message)
-          return console.log(err)
+          return console.error(err)
         })
     )
   },
-
   deletePost ({ commit }, payload) {
     if (payload.image !== '') {
       // Delete image on server when available
@@ -212,7 +169,7 @@ export const actions = {
           console.log('File deleted')
         })
         .catch(err => {
-          console.log(err.response)
+          console.error(err.response)
         })
     }
     return (
@@ -223,32 +180,21 @@ export const actions = {
         })
         .catch(err => {
           commit('setError', 'Error deleting the post. Try again later')
-          console.log(err)
+          console.error(err)
         })
     )
-    // return (
-    //   this.$axios.$delete('/post/' + id + '.json' + '?auth=' + state.user.idToken)
-    //     .then(data => {
-    //       commit('setError', '')
-    //       commit('deletePostInPosts', id)
-    //     })
-    //     .catch(err => {
-    //       commit('setError', 'Error deleting the post. Try again later')
-    //     })
-    // )
   },
   setPostsView ({ commit }, viewType) {
     commit('setPostsView', viewType)
   },
-  register ({ commit, dispatch }, formData) {
+  register ({ commit }, formData) {
     // Write user in postgres database
     return (
       this.$axios.$post('/api/user', formData)
         .then(data => {
-          // Write cookies
+          // Set cookies. Token returned from addUser api
           const now = new Date()
           const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
-          // Set cookies. Token returned from addUser api
           this.$cookies.set('token', data.token, {
             path: '/',
             expires: expirationDate
@@ -269,68 +215,11 @@ export const actions = {
         })
         .catch(err => {
           commit('setError', err.response.data)
-          console.log(err.response.data)
+          console.error(err)
         })
-    )
-    // return (
-    //   this.$axios.$post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' + process.env.FB_API_KEY, {
-    //     email: formData.email, 
-    //     password: formData.password, 
-    //     returnSecureToken: true
-    //   })
-    //     .then( data => {
-    //       // Write cookies
-    //       const now = new Date()
-    //       const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
-    //       this.$cookies.set('token', data.idToken, {
-    //         path: '/',
-    //         expires: expirationDate
-    //       })
-    //       this.$cookies.set('user', formData.email, {
-    //         path: '/',
-    //         expires: expirationDate
-    //       })
-    //       this.$cookies.set('expirationDate', expirationDate, {
-    //         path: '/',
-    //         expires: expirationDate
-    //       })
-    //       // Write user record to firebase database
-    //       const userData = formData
-    //       delete userData['password']
-    //       this.$axios.$post('/users.json' + '?auth=' + data.idToken, userData)
-    //         .then(data => {
-    //         })
-    //         .catch(err => console.log(err))
-    //       const user = {
-    //         firstname: formData.firstname,
-    //         surname: formData.surname,
-    //         email: formData.email,
-    //         idToken: data.idToken
-    //       }
-    //       commit('setError', '') 
-    //       commit('login', user)
-    //       dispatch('setAutologout', data.expiresIn * 1000)
-    //       // Example how we could write our own express-server DB
-    //       // Write data to our Express server api track-data
-    //       return (
-    //         this.$axios.post('/api/track-data', {data: formData.email})
-    //           .then(res => {
-    //             console.log(res)
-    //             if (res.status < 400) {
-    //               console.log('Success')
-    //             } else {
-    //               console.log('Something went wrong')
-    //             }
-    //           })
-    //           .catch(err => console.log(err))
-    //   )
-    //     })
-    //     .catch(err => {
-    //       commit('setError', 'Cannot login the user, try again later')
-    //     })
-    // )
+    )    
   },
-  login ({ commit, dispatch }, formData) {
+  login ({ commit }, formData) {
     // Login user through Postgres DB
     return (
       this.$axios.$post('/api/login', formData)
@@ -338,7 +227,6 @@ export const actions = {
           // Set Cookies. Token returned from Login
           const now = new Date()
           const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
-
           this.$cookies.set('token', data.token, {
             path: '/',
             expires: expirationDate
@@ -363,66 +251,7 @@ export const actions = {
             commit('setError', 'Invalid password')
           }
         })
-    )
-    // return (
-    //   this.$axios.$post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + process.env.FB_API_KEY, {
-    //     email: formData.email, 
-    //     password: formData.password, 
-    //     returnSecureToken: true
-    //   })
-    //     .then( data => {
-    //       // Set cookies
-    //       const now = new Date()
-    //       const expirationDate = new Date(now.getTime() + data.expiresIn * 1000)
-    //       this.$cookies.set('token', data.idToken, {
-    //         path: '/',
-    //         expires: expirationDate
-    //       })
-    //       this.$cookies.set('user', formData.email, {
-    //         path: '/',
-    //         expires: expirationDate
-    //       })
-    //       this.$cookies.set('expirationDate', expirationDate, {
-    //         path: '/',
-    //         expires: expirationDate
-    //       })
-    //       commit('setError', '')
-    //       // Read user data on firebase
-    //       const wrkIdToken = data.idToken
-    //       const wrkExpiresIn = data.expiresIn
-    //       let user = {}
-    //       return (
-    //         this.$axios.$get('/users.json?orderBy="email"&equalTo="' + formData.email + '"')
-    //           .then(data => {
-    //             const id = Object.keys(data)
-    //             user = data[id]
-    //             user.id = id[0]
-    //             user.idToken = wrkIdToken
-    //             commit('login', user)
-    //             commit('setError', '')
-    //             dispatch('setAutologout', wrkExpiresIn * 1000)
-    //             // Example how we could write our own express-server DB
-    //             // Write data to our Express server API track-data
-    //             return (
-    //               this.$axios.post('/api/track-data', {data: formData.email})
-    //                 .then(res => {
-    //                   console.log(res)
-    //                   if (res.status < 400) {
-    //                     console.log('Success')
-    //                   } else {
-    //                     console.log('Something went wrong')
-    //                   }
-    //                 })
-    //                 .catch(err => console.log(err))
-    //             )
-    //           })
-    //           .catch(err => console.log(err))
-    //       )
-    //     })
-    //     .catch(err => {
-    //       commit('setError', 'Invalid email or password')
-    //     })
-    // )
+    )    
   },
   updateUser ({ commit }, form) {
     form.updated = new Date().toISOString()
@@ -434,39 +263,18 @@ export const actions = {
           commit('updatePostAuthor', form)
         })
         .catch(err => {
-          commit('setError', 'Could not update the user. Please try again later')
+          commit('setError', err.response.data.error.message)
           console.error(err)
-          console.log(err)
         })
     )
-    // let user = {...form}
-    // delete user['id']
-    // delete user['idToken']
-    // return (
-    //   this.$axios.$put('/users/' + form.id + '.json' + '?auth=' + form.idToken, user)
-    //     .then(data => {
-    //       commit('setError', '')
-    //       commit('updateUser', form)
-    //     })
-    //     .catch(err => {
-    //       commit('setError', 'Could not update the user. Please try again later')
-    //     })
-    // )
   },
   logout (context) {
     // Remove cookies
-    // this.$cookies.removeAll() //works only on root-path '/'
     this.$cookies.remove('token', {path: '/'})
     this.$cookies.remove('user', {path: '/'})
     this.$cookies.remove('expirationDate', {path: '/'})    
     context.commit('logout')
     this.$router.push('/auth?isLogin="true"')
-  },
-  setAutologout (context, duration) {
-    setTimeout(()=>{
-      context.dispatch('logout')
-      alert("Your session has expired! Login again")  
-    }, duration)
   },
   isLoading ({ commit }, element) {
     commit('isLoading', element)
