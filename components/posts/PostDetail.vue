@@ -5,7 +5,7 @@
           class="mb-3"
           :src="imgUrl"
           :alt="post.imgalt"
-          img-top>
+          top>
         </b-card-img>
 
         <b-card-title
@@ -21,7 +21,7 @@
           <p class="lineBreak">{{ post.content }}</p>
         </b-card-text>
 
-        <div class="mt-3">
+        <div class="mt-3 mb-3">
         <b-button v-if="!isPreview"
           @click="goBack" 
           variant="primary">
@@ -83,6 +83,13 @@ export default {
     imgUrl () {
       if (this.post.img_name) {
         return process.env.baseURL +'/api/image/' + this.post.img_name
+      } else {
+        return ''
+      }
+    },
+    imgThumb () {
+      if (this.post.img_name) {
+        return process.env.baseURL +'/api/thumbnail/' + this.post.img_name
       } else {
         return ''
       }

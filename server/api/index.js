@@ -2,13 +2,14 @@ const express = require('express')
 const db = require('../db/index')
 const multer  = require('multer')
 const fs = require('fs')
+const qt = require('quickthumb')
 
 const router = express.Router()
 
 // Multer definition
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'server/api/uploads')
+    cb(null, 'server/api/uploads/images')
   },
   filename: function (req, file, cb) {
     const fileType = file.mimetype
@@ -17,7 +18,18 @@ const storage = multer.diskStorage({
     }
     const ext = file.originalname.slice((file.originalname.lastIndexOf(".") - 1 >>> 0) + 2)
     if (ext === 'jpg' || ext === 'jpeg' || ext === 'bmp' || ext === 'gif') {
-      cb(null, file.fieldname + '-' + Date.now() + '.' + ext)
+      const storeField = file.fieldname + '-' + Date.now() + '.' + ext
+      cb(null, storeField)
+      // Create thumbnails
+      qt.convert({
+        src: 'server/api/uploads/images/' + storeField,
+        dst: 'server/api/uploads/thumbnails/' + storeField,
+        width: 100
+      }, function (err, path) {
+        console.log('qt error: ', err)
+        console.log('qt path: ', path)
+      });
+    
     } else {
       cb(new Error('Image has missing/invalid file extension (Accepted: jpg, jpeg, bmp, gif)'))
     }
@@ -40,16 +52,28 @@ router.post('/post', upload.single('img_upload'), db.addPost)
 router.put('/post/:id', upload.single('img_upload'), db.updatePost)
 router.delete('/post/:id', db.deletePost)
 // Images
+  // Get full image
 router.get('/image/:file', function(req, res, next) {
-  res.sendFile(__dirname + '/uploads/' + req.params.file), function(err) {
+  res.sendFile(__dirname + '/uploads/images/' + req.params.file), function(err) {
     if (err) {
       console.log('Error in sendFile image: ', err)
       throw new Error('Cannot find image')
     }
   }
 })
+  // Get thumbnail image
+  router.get('/thumbnail/:file', function(req, res, next) {
+    res.sendFile(__dirname + '/uploads/thumbnails/' + req.params.file), function(err) {
+      if (err) {
+        console.log('Error in sendFile image: ', err)
+        throw new Error('Cannot find thumbnail')
+      }
+    }
+  })
+  
 router.delete('/image/:name', function(req,res) {
-  fs.unlink(__dirname + '/uploads/' + req.params.name, function(err) {
+  // Delete image from server
+  fs.unlink(__dirname + '/uploads/images/' + req.params.name, function(err) {
     if (err) {
       if (err.code === 'ENOENT') {
         return console.log('Image not found')
@@ -59,6 +83,18 @@ router.delete('/image/:name', function(req,res) {
       res.send('Image deleted')
     }
   })
+  // Delete thumbnail from server
+  fs.unlink(__dirname + '/uploads/thumbnails/' + req.params.name, function(err) {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        return console.log('Tumbnail not found')
+      }
+    } else {
+      res.status(200)
+      res.send('Thumbnail deleted')
+    }
+  })
+
 })
 
 module.exports = {
