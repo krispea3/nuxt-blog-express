@@ -7,17 +7,16 @@
           <Header />
       </b-col>
       </b-row>
-      <b-row no-gutters align-h="center">
-        <b-col cols="12">
-        <b-card-group deck>
-        <div  v-for="post in filteredPosts" :key="post._id">
-          <PostDetail
-            :isPreview="true" 
-            :isAdmin="isAdmin" 
-            :post="post">
-          </PostDetail>
-        </div>
-        </b-card-group>
+      <b-row no-gutters align-h="start">
+        <b-col v-for="post in filteredPosts" :key="post._id" 
+          cols="4"
+          class="d-flex"
+        >
+              <PostDetail
+                :isPreview="true" 
+                :isAdmin="isAdmin" 
+                :post="post">
+              </PostDetail>
         </b-col>
       </b-row>
     </div>
@@ -29,8 +28,10 @@
           <Header />
         </b-col>
       </b-row>
-      <div  v-for="post in filteredPosts" :key="post._id">
-        <b-row no-gutters align-h="center">
+        <b-row v-for="post in filteredPosts" :key="post._id"
+          no-gutters 
+          align-h="center"
+        >
           <b-col cols="12">
           <PostDetail
             :isPreview="true" 
@@ -39,7 +40,6 @@
           </PostDetail>
           </b-col>
         </b-row>
-      </div>
     </div>
   </div>
 </template>
