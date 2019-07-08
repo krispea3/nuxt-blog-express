@@ -19,17 +19,7 @@ const storage = multer.diskStorage({
     const ext = file.originalname.slice((file.originalname.lastIndexOf(".") - 1 >>> 0) + 2)
     if (ext === 'jpg' || ext === 'jpeg' || ext === 'bmp' || ext === 'gif') {
       const storeField = file.fieldname + '-' + Date.now() + '.' + ext
-      cb(null, storeField)
-      // Create thumbnails
-      qt.convert({
-        src: 'server/api/uploads/images/' + storeField,
-        dst: 'server/api/uploads/thumbnails/' + storeField,
-        width: 100
-      }, function (err, path) {
-        console.log('qt error: ', err)
-        console.log('qt path: ', path)
-      });
-    
+      cb(null, storeField)    
     } else {
       cb(new Error('Image has missing/invalid file extension (Accepted: jpg, jpeg, bmp, gif)'))
     }
@@ -52,7 +42,7 @@ router.post('/post', upload.single('img_upload'), db.addPost)
 router.put('/post/:id', upload.single('img_upload'), db.updatePost)
 router.delete('/post/:id', db.deletePost)
 // Images
-  // Get full image
+  // Get original image
 router.get('/image/:file', function(req, res, next) {
   res.sendFile(__dirname + '/uploads/images/' + req.params.file), function(err) {
     if (err) {

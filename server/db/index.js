@@ -1,4 +1,5 @@
 const promise = require('bluebird');
+const sharp = require('sharp')
 const connection = require('./.config');
 const options = {
   // Initialization Options
@@ -187,7 +188,17 @@ const getPost = (req, res, next) => {
 }
 
 const addPost = (req, res, next) => {
-  if (!req.file) {
+  if (req.file) {
+    // Resize image to height 432
+    sharp(req.file.path)
+      .resize(null, 432)
+      .toFile('server/api/uploads/images/height_432/' + req.file.filename, (error, info) => {
+        if (error) {
+          console.error(error)
+          return new Error('Error resizing image (sharp)')
+        }
+      })
+  } else {
     const file = {filename: '', originalname: ''}
     req.file = file
   }
