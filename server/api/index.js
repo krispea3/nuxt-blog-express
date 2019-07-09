@@ -52,7 +52,6 @@ router.get('/image/:file', function(req, res, next) {
 })
 // Get 432 image
 router.get('/img432/:file', function(req, res, next) {
-  console.log(req.params)
   res.sendFile(__dirname + '/uploads/images/height_432/' + req.params.file), function(err) {
     if (err) {
       console.log('Error in sendFile image: ', err)

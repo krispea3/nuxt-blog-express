@@ -23,8 +23,6 @@ const resizeImage = (path, file) => {
         if (error) {
           console.error(error)
           return new Error('Error resizing image (sharp)')
-        } else {
-          console.log(info)
         }
       })
   // Resize to tumbnails 100X100
@@ -34,8 +32,6 @@ const resizeImage = (path, file) => {
         if (error) {
           console.error(error)
           return new Error('Error resizing image (sharp)')
-        } else {
-          console.log(info)
         }
       })
 }
