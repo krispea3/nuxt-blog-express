@@ -156,19 +156,19 @@ export const actions = {
     )
   },
   deletePost ({ commit, dispatch }, payload) {
-    if (payload.image !== '') {
       // Delete post
       return this.$axios.$delete('/api/post/' + payload.id)
       .then(() => {
         commit('setError', '')
         commit('deletePostInPosts', payload.id)
-        dispatch('deleteImages', payload.image)
+        if (payload.image !== '') {
+          dispatch('deleteImages', payload.image)
+        }
       })
       .catch(err => {
         commit('setError', 'Error deleting the post. Try again later')
         console.error(err)
       })
-    }
   },
   deleteImages (context, imageName) {
     this.$axios.$delete('/api/image/' + imageName)
