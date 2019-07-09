@@ -9,7 +9,7 @@
       </b-row>
       <b-row no-gutters align-h="start">
         <b-col v-for="post in filteredPosts" :key="post._id" 
-          cols="4"
+          md="4"
           class="d-flex"
         >
               <PostDetail

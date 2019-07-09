@@ -5,7 +5,7 @@
         <Search />
       </b-col>
       <b-row align-v="end" align-h="start" no-gutters>
-        <b-col>
+        <b-col class="d-none d-md-block">
           <i v-if="selected !=='list'"
             id="list" 
             class="material-icons"

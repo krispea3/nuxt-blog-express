@@ -2,7 +2,7 @@
   <div>
     <!-- Card view -->
     <b-card v-if="!isPreview | viewType === 'card'"
-      class="text-center flex-fill" 
+      class="text-center flex-fill mb-2 mr-1" 
       :class="{draft: post.draft}"
       :img-src="img432"
       img-top

@@ -3,7 +3,7 @@ var FormData = require('form-data')
 export const state = () => ({
   posts: [],
   user: {},
-  postsView: 'list', //'list' or 'card'
+  postsView: 'card', //'list' or 'card'
   error: '',
   isLoading: [],
   searchString: ''
