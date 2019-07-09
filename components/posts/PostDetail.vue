@@ -4,7 +4,7 @@
     <b-card v-if="!isPreview | viewType === 'card'"
       class="text-center flex-fill" 
       :class="{draft: post.draft}"
-      :img-src="imgUrl"
+      :img-src="img432"
       img-top
       :alt="post.imgalt"
       :title="post.title"
@@ -56,7 +56,7 @@
       <b-row align-v="center">
         <b-col md="2">
           <b-card-img 
-            :src="imgUrl" 
+            :src="img432" 
             class="rounded-0"
           >
           </b-card-img>
@@ -141,6 +141,14 @@ export default {
       } else {
         return ''
       }
+    },
+    img432 () {
+      if (this.post.img_name) {
+        return process.env.baseURL +'/api/img432/' + this.post.img_name
+      } else {
+        return ''
+      }
+
     }
   },
   methods: {

@@ -15,6 +15,30 @@ const saltRounds = 10;
 // const cn = 'postgres://chris:phils33@localhost:5432/blog';
 const db = pgp(connection.cn); // database instance;
 
+const resizeImage = (path, file) => {
+  // Resize to height 432 for card display
+  sharp(path)
+      .resize(null, 432)
+      .toFile('server/api/uploads/images/height_432/' + file, (error, info) => {
+        if (error) {
+          console.error(error)
+          return new Error('Error resizing image (sharp)')
+        } else {
+          console.log(info)
+        }
+      })
+  // Resize to tumbnails 100X100
+  sharp(path)
+      .resize(100, 100)
+      .toFile('server/api/uploads/images/thumbnails/' + file, (error, info) => {
+        if (error) {
+          console.error(error)
+          return new Error('Error resizing image (sharp)')
+        } else {
+          console.log(info)
+        }
+      })
+}
 // Users
 const getUsers = (req, res, next) => {
   db.any('SELECT * FROM users', [true])
@@ -189,15 +213,7 @@ const getPost = (req, res, next) => {
 
 const addPost = (req, res, next) => {
   if (req.file) {
-    // Resize image to height 432
-    sharp(req.file.path)
-      .resize(null, 432)
-      .toFile('server/api/uploads/images/height_432/' + req.file.filename, (error, info) => {
-        if (error) {
-          console.error(error)
-          return new Error('Error resizing image (sharp)')
-        }
-      })
+    resizeImage(req.file.path, req.file.filename)
   } else {
     const file = {filename: '', originalname: ''}
     req.file = file
@@ -220,7 +236,9 @@ const addPost = (req, res, next) => {
 }
 
 const updatePost = (req, res, next) => {
-  if (!req.file) {
+  if (req.file) {
+    resizeImage(req.file.path, req.file.filename)
+  } else {
     const file = {filename: req.body.img_name, originalname: req.body.img_original_name}
     req.file = file
   }

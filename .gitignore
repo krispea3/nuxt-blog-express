@@ -88,3 +88,6 @@ sw.*
 
 # Mac OSX
 .DS_Store
+
+# uploaded data from user
+server/api/uploads

@@ -41,8 +41,7 @@ router.get('/post/:id', db.getPost)
 router.post('/post', upload.single('img_upload'), db.addPost)
 router.put('/post/:id', upload.single('img_upload'), db.updatePost)
 router.delete('/post/:id', db.deletePost)
-// Images
-  // Get original image
+// Get original image
 router.get('/image/:file', function(req, res, next) {
   res.sendFile(__dirname + '/uploads/images/' + req.params.file), function(err) {
     if (err) {
@@ -51,40 +50,63 @@ router.get('/image/:file', function(req, res, next) {
     }
   }
 })
-  // Get thumbnail image
-  router.get('/thumbnail/:file', function(req, res, next) {
-    res.sendFile(__dirname + '/uploads/thumbnails/' + req.params.file), function(err) {
-      if (err) {
-        console.log('Error in sendFile image: ', err)
-        throw new Error('Cannot find thumbnail')
-      }
+// Get 432 image
+router.get('/img432/:file', function(req, res, next) {
+  console.log(req.params)
+  res.sendFile(__dirname + '/uploads/images/height_432/' + req.params.file), function(err) {
+    if (err) {
+      console.log('Error in sendFile image: ', err)
+      throw new Error('Cannot find image')
     }
-  })
+  }
+})
+// Get thumbnail image
+router.get('/thumbnail/:file', function(req, res, next) {
+  res.sendFile(__dirname + '/uploads/images/thumbnails/' + req.params.file), function(err) {
+    if (err) {
+      console.log('Error in sendFile image: ', err)
+      throw new Error('Cannot find thumbnail')
+    }
+  }
+})
   
 router.delete('/image/:name', function(req,res) {
   // Delete image from server
+  let deleteErrors = false
   fs.unlink(__dirname + '/uploads/images/' + req.params.name, function(err) {
     if (err) {
       if (err.code === 'ENOENT') {
-        return console.log('Image not found')
+        console.log('Image not found')
+        deleteErrors = true
       }
-    } else {
-      res.status(200)
-      res.send('Image deleted')
+    }
+  })
+  // Delete 432 images from server
+  fs.unlink(__dirname + '/uploads/images/height_432/' + req.params.name, function(err) {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        console.log('Image 432 not found')
+        deleteErrors = true
+      }
     }
   })
   // Delete thumbnail from server
-  fs.unlink(__dirname + '/uploads/thumbnails/' + req.params.name, function(err) {
+  fs.unlink(__dirname + '/uploads/images/thumbnails/' + req.params.name, function(err) {
     if (err) {
       if (err.code === 'ENOENT') {
-        return console.log('Tumbnail not found')
+        console.log('Thumbnail not found')
+        deleteErrors = true
       }
-    } else {
-      res.status(200)
-      res.send('Thumbnail deleted')
-    }
+    } 
   })
 
+  if (deleteErrors) {
+    res.status(400)
+    res.send('Some images not found')
+  } else {
+    res.status(200)
+    res.send('All images deleted')
+}
 })
 
 module.exports = {

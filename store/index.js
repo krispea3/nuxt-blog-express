@@ -163,26 +163,25 @@ export const actions = {
   },
   deletePost ({ commit }, payload) {
     if (payload.image !== '') {
-      // Delete image on server when available
-      this.$axios.$delete('/api/image/' + payload.image)
+      // Delete post
+      return this.$axios.$delete('/api/post/' + payload.id)
+      .then(() => {
+        commit('setError', '')
+        commit('deletePostInPosts', payload.id)
+        // Delete image on server when available
+        return this.$axios.$delete('/api/image/' + payload.image)
         .then(() => {
           console.log('File deleted')
         })
         .catch(err => {
           console.error(err.response)
         })
+      })
+      .catch(err => {
+        commit('setError', 'Error deleting the post. Try again later')
+        console.error(err)
+      })
     }
-    return (
-      this.$axios.$delete('/api/post/' + payload.id)
-        .then(() => {
-          commit('setError', '')
-          commit('deletePostInPosts', payload.id)
-        })
-        .catch(err => {
-          commit('setError', 'Error deleting the post. Try again later')
-          console.error(err)
-        })
-    )
   },
   setPostsView ({ commit }, viewType) {
     commit('setPostsView', viewType)
