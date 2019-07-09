@@ -18,7 +18,7 @@ const db = pgp(connection.cn); // database instance;
 const resizeImage = (path, file) => {
   // Resize to height 432 for card display
   sharp(path)
-      .resize(null, 432)
+      .resize(648, 432)
       .toFile('server/api/uploads/images/height_432/' + file, (error, info) => {
         if (error) {
           console.error(error)

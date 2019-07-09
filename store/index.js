@@ -120,7 +120,7 @@ export const actions = {
         })
     )
   },
-  updatePost ({ commit, state }, payload) {
+  updatePost ({ commit, dispatch }, payload) {
     const formData = payload.formData
     const img_upload = payload.img_upload
     // Using form-data module to handle mutipart file on server. We have formData and image file 
@@ -140,14 +140,8 @@ export const actions = {
       this.$axios.$put('/api/post/' + formData._id, form)
         .then((data) => {
           // Delete old image when image updated
-          if (img_upload & formData.img_name != '') {
-            return this.$axios.$delete('/api/image/' + formData.img_name)
-              .then(() => {
-                return console.log('Old image removed')
-              })
-              .catch(err => {
-                return console.log(err.response)
-              })
+          if (img_upload != null & formData.img_name != '') {
+            dispatch('deleteImages', formData.img_name)
           }
           formData.updated = data.post.updated
           formData.img_name = data.file.name
@@ -161,27 +155,29 @@ export const actions = {
         })
     )
   },
-  deletePost ({ commit }, payload) {
+  deletePost ({ commit, dispatch }, payload) {
     if (payload.image !== '') {
       // Delete post
       return this.$axios.$delete('/api/post/' + payload.id)
       .then(() => {
         commit('setError', '')
         commit('deletePostInPosts', payload.id)
-        // Delete image on server when available
-        return this.$axios.$delete('/api/image/' + payload.image)
-        .then(() => {
-          console.log('File deleted')
-        })
-        .catch(err => {
-          console.error(err.response)
-        })
+        dispatch('deleteImages', payload.image)
       })
       .catch(err => {
         commit('setError', 'Error deleting the post. Try again later')
         console.error(err)
       })
     }
+  },
+  deleteImages (context, imageName) {
+    this.$axios.$delete('/api/image/' + imageName)
+      .then(() => {
+        console.log('File deleted')
+      })
+      .catch(err => {
+        console.error(err.response)
+      })
   },
   setPostsView ({ commit }, viewType) {
     commit('setPostsView', viewType)
