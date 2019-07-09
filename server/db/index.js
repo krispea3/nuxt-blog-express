@@ -9,13 +9,12 @@ const pgp = require('pg-promise')(options);
 const  jwt  =  require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const SECRET_KEY = "secretkey050440";
+const SECRET_KEY = 'secretkey050440';
 const saltRounds = 10;
 
-// const cn = 'postgres://chris:phils33@localhost:5432/blog';
 const db = pgp(connection.cn); // database instance;
 
-const resizeImage = (path, file) => {
+const resizeImage = (path, file) =>  {
   // Resize to height 432 for card display
   sharp(path)
       .resize(648, 432)
