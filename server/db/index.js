@@ -119,6 +119,7 @@ const addUser = (req, res, next) => {
   // Check if email already in use
   db.any('SELECT email FROM users WHERE email=${email}', req.body)
     .then(data => {
+      console.log('data from select users with email: ', data)
       // Send error response if email in use
       if (data.length > 0) {
         res.status(403)
