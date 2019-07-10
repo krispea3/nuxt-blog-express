@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const SECRET_KEY = 'secretkey050440';
 const saltRounds = 10;
 
+console.log('db connection: ', connection.cn)
 const db = pgp(connection.cn); // database instance;
 
 const resizeImage = (path, file) =>  {
