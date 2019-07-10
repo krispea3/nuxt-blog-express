@@ -57,7 +57,7 @@ typings/
 .yarn-integrity
 
 # Configurations
-.config.js
+# .config.js
 # dotenv environment variables file
 .env
 
@@ -90,4 +90,4 @@ sw.*
 .DS_Store
 
 # uploaded data from user
-server/api/uploads
+# server/api/uploads
