@@ -1,5 +1,7 @@
 const bodyParser = require('body-parser')
 
+const { host, port } = nuxt.options.server
+
 module.exports = {
   mode: 'universal',
   /*
@@ -53,7 +55,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.NODE_ENV === 'development' ?'http://localhost:3000' :'http://172.17.116.214:57574/',
+    baseURL: process.env.NODE_ENV === 'development' ?'http://localhost:3000' :'http://' + host + ':' + port,
     credentials: false
   },
   /*
