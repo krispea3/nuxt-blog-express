@@ -180,17 +180,23 @@ const updateUser = (req, res, next) => {
 const getPosts = (req, res, next) => {
   db.any('SELECT posts._id, posts.title, posts.description, posts.content, posts.img_name, posts.img_original_name, posts.imgalt, posts.draft, posts.published, posts.userid, posts.created, posts.updated, users.firstname, users.surname FROM posts, users WHERE posts.userid = users._id', [true])
     .then(data => {
-      // return (
-        res.status(200).json({
-          status: 'success',
+      res.statusCode = 200
+      return res.json({
+        status: 'success',
           posts: data,
           message: 'Retrieved ALL posts'
-        })
-      // )
+      })
+    //   return (
+    //     res.status(200).json({
+    //       status: 'success',
+    //       posts: data,
+    //       message: 'Retrieved ALL posts'
+    //     })
+    //   )
     })
     .catch(error => {
       return next(error)
-    });
+    })
 }
 
 const getPost = (req, res, next) => {
