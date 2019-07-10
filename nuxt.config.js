@@ -53,7 +53,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.NODE_ENV === 'development' ?'http://localhost:3000' :'https://nuxt-blog-express.herokuapp.com',
+    baseURL: process.env.NODE_ENV === 'development' ?'http://localhost:3000' :'http://172.17.116.214:57574/',
     credentials: false
   },
   /*
