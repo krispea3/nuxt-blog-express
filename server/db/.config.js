@@ -1,6 +1,4 @@
-
-const jwtSecret = 'secretkey050440'
-
 module.exports = {
-  cn: process.env.NODE_ENV === 'development' ?'postgres://chris:phils33@localhost:5432/blog' :process.env.DATABASE_URL+'?ssl=true'
+  cn: process.env.NODE_ENV === 'development' ?'postgres://chris:phils33@localhost:5432/blog' :{connectionString: process.env.DATABASE_URL,
+  ssl: true}
 }
