@@ -20,7 +20,7 @@ export default {
     updateUser (form) {
       this.$store.dispatch('updateUser', form)
         .then(() => {
-          this.$store.dispatch('isLoading', false)
+          this.$store.dispatch('isLoading', null)
           if (!this.$store.getters.error) {
             this.$router.push('/')
           }

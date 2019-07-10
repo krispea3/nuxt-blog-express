@@ -14,14 +14,25 @@ import PostForm from '~/components/posts/PostForm'
 export default {
   asyncData (context) {
     return (
-      context.app.$axios.$get('/post/' + context.params.id + '.json')
+      context.app.$axios.$get('http://localhost:3000/api/post/' + context.params.id)
         .then(data => {
           return {
-            loadedPost: data
+            loadedPost: data.post
           }
         })
-        .catch(err => context.error(err))
+        .catch(err => {
+          return console.log(err)
+        })
     )
+    // return (
+    //   context.app.$axios.$get('/post/' + context.params.id + '.json')
+    //     .then(data => {
+    //       return {
+    //         loadedPost: data
+    //       }
+    //     })
+    //     .catch(err => context.error(err))
+    // )
   },
   computed: {
     error () {
@@ -32,18 +43,22 @@ export default {
     PostForm
   },
   methods: {
-    onSave (formData) {
-      this.$store.dispatch('updatePost', {formData: formData, id: this.$route.params.id})
+    onSave (payload) {
+      payload.formData._id = +this.$route.params.id
+      this.$store.dispatch('updatePost', payload)
       // The updatePost action returns the axios promise. So we will enter .then when axios wrote the data to firebase
         .then(() => {
+          this.$store.dispatch('isLoading', null)
           if (!this.error) {
            this.$router.push('/admin')
           }
         })
     },
-    onDelete () {
-      this.$store.dispatch('deletePost', this.$route.params.id)
+    onDelete (image) {
+      const payload = {id: +this.$route.params.id, image: image}
+      this.$store.dispatch('deletePost', payload)
         .then(() => {
+          this.$store.dispatch('isLoading', null)
           this.$router.push('/admin')
         })
     }

@@ -17,16 +17,27 @@ export default {
   // },
   asyncData (context) {
     return (
-      context.app.$axios.$get('/post/' + context.params.id + '.json')
+      context.app.$axios.$get('/api/post/' + context.params.id)
         .then(data => {
           return {
-            loadedPost: data
+            loadedPost: data.post
           }
         })
         .catch(err => {
-          return context.error(err)
+          return console.log(err)
         })
     )
+    // return (
+    //   context.app.$axios.$get('/post/' + context.params.id + '.json')
+    //     .then(data => {
+    //       return {
+    //         loadedPost: data
+    //       }
+    //     })
+    //     .catch(err => {
+    //       return context.error(err)
+    //     })
+    // )
   },
   components: {
     PostDetail

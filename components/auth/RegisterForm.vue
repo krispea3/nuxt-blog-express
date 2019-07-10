@@ -1,45 +1,45 @@
 <template>
     <b-form>
       <b-form-group
-        id="input-group-1"
-        label="Firstname:"
-        label-for="input-1">
-        <b-form-input :class="{invalid: $v.form.firstName.$error}"
-          id="input-1"
-          v-model="form.firstName"
+        id="input-group-firstname"
+        label="firstname:"
+        label-for="input-firstname">
+        <b-form-input :class="{invalid: $v.form.firstname.$error}"
+          id="input-firstname"
+          v-model="form.firstname"
           type="text"
           placeholder="Enter firstname"
-          @blur="$v.form.firstName.$touch()">
+          @blur="$v.form.firstname.$touch()">
         </b-form-input>
-        <div v-if="$v.form.firstName.$dirty">
-          <span class="error" v-if="!$v.form.firstName.required">Firstname required</span>
+        <div v-if="$v.form.firstname.$dirty">
+          <span class="error" v-if="!$v.form.firstname.required">firstname required</span>
         </div>
       </b-form-group>
 
       <b-form-group
-        id="input-group-2"
+        id="input-group-surname"
         label="Surname:"
-        label-for="input-2">
-        <b-form-input :class="{invalid: $v.form.surName.$error}"
-          id="input-2"
-          v-model="form.surName"
+        label-for="input-surname">
+        <b-form-input :class="{invalid: $v.form.surname.$error}"
+          id="input-surname"
+          v-model="form.surname"
           type="text"
           placeholder="Enter surname"
-          @blur="$v.form.surName.$touch()">
+          @blur="$v.form.surname.$touch()">
         </b-form-input>
-        <div v-if="$v.form.surName.$dirty">
-          <span class="error" v-if="!$v.form.surName.required">Surname required</span>
+        <div v-if="$v.form.surname.$dirty">
+          <span class="error" v-if="!$v.form.surname.required">Surname required</span>
         </div>
 
       </b-form-group>
 
       <b-form-group
-        id="input-group-3"
+        id="input-group-email"
         label="Email address:"
-        label-for="input-3"
+        label-for="input-email"
         description="We'll never share your email with anyone else.">
         <b-form-input :class="{invalid: $v.form.email.$error}"
-          id="input-3"
+          id="input-email"
           v-model="form.email"
           type="email"
           :disabled="user ?true :false"
@@ -54,12 +54,12 @@
       </b-form-group>
 
       <b-form-group v-if="!user"
-        id="input-group-4"
+        id="input-group-password"
         label="Password:"
-        label-for="input-4"
+        label-for="input-password"
         description="Minimum 8 chars">
         <b-form-input :class="{invalid: $v.form.password.$error}"
-          id="input-4"
+          id="input-password"
           v-model="form.password"
           type="password"
           placeholder="Enter password"
@@ -71,6 +71,23 @@
         </div>
       </b-form-group>
 
+      <b-form-group v-if="!user"
+        id="input-group-confirmPassword"
+        label="Confirm password:"
+        label-for="input-confirmPassword">
+        <b-form-input :class="{invalid: $v.form.confirmPassword.$error}"
+          id="input-confirmPassword"
+          v-model="form.confirmPassword"
+          type="password"
+          placeholder="Confirm password"
+          @blur="$v.form.confirmPassword.$touch()">
+        </b-form-input>
+        <div v-if="$v.form.confirmPassword.$dirty">
+          <span class="error" v-if="!$v.form.confirmPassword.passwordConfirmed">Passwords don't match</span>
+        </div>
+      </b-form-group>
+
+
       <b-alert v-if="error" variant="danger" show>{{ error }}</b-alert>
 
       <b-button v-if="!user"
@@ -78,14 +95,14 @@
         :disabled="$v.form.$invalid"
         variant="success">
           Register
-        <b-spinner v-if="isLoading" small></b-spinner>
+        <b-spinner v-if="isLoading.includes('register')" small></b-spinner>
       </b-button>
       <b-button v-if="user"
         @click="updateUser"
         :disabled="$v.form.$invalid"
         variant="success">
           Save
-        <b-spinner v-if="isLoading" small></b-spinner>
+        <b-spinner v-if="isLoading.includes('update')" small></b-spinner>
       </b-button>
             <b-button
         @click="$router.go(-1)">
@@ -96,7 +113,7 @@
 </template>
 
 <script>
-import { required, email, minLength } from 'vuelidate/lib/validators'
+import { required, email, minLength, sameAs } from 'vuelidate/lib/validators'
 import axios from 'axios'
 
 export default {
@@ -105,24 +122,26 @@ export default {
       this.form = {...this.user}
       // Assigning pseudo password for formvalidation. Will be written no where
       this.form.password = '12345678'
+      this.form.confirmPassword = '12345678'
     }
   },
   data () {
     return {
       form: {
-        firstName: '',
-        surName: '',
+        firstname: '',
+        surname: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
       },
     }
   },
   validations: {
     form: {
-      firstName: {
+      firstname: {
         required
       },
-      surName: {
+      surname: {
         required
       },
       email: {
@@ -140,7 +159,10 @@ export default {
       password: {
         required,
         minLength: minLength(8)
-      }
+      },
+      confirmPassword: {
+          passwordConfirmed: sameAs('password')
+      } 
     }
   },
   props: {
@@ -159,13 +181,15 @@ export default {
   },
   methods: {
     register () {
-      this.$store.dispatch('isLoading', true)
+      delete this.form['confirmPassword']
+      this.$store.dispatch('isLoading', 'register')
       this.$emit('register', this.form)
     },
     updateUser () {
       // remove password from the form
       delete this.form['password']
-      this.$store.dispatch('isLoading', true)
+      delete this.form['confirmPassword']
+      this.$store.dispatch('isLoading', 'update')
       this.$emit('updateUser', this.form)
     }
   }

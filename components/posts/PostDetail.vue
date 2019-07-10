@@ -1,54 +1,109 @@
 <template>
-      <b-card class="mb-3 text-center">
+  <div>
+    <!-- Card view -->
+    <b-card v-if="!isPreview | viewType === 'card'"
+      class="text-center flex-fill mb-2 mr-1" 
+      :class="{draft: post.draft}"
+      :img-src="img432"
+      img-top
+      :alt="post.imgalt"
+      :title="post.title"
+      :sub-title="post.description"
+    >
+      <b-card-text v-if="!isPreview">
+        {{ post.content }}
+      </b-card-text>
 
-        <b-card-img v-if="!isPreview"
-          class="mb-3"
-          :src="post.imgUrl" 
-          :alt="post.imgAlt"
-          img-top>
-        </b-card-img>
+      <div slot="footer">
+        <small class="text-muted">{{post.updated ?post.updated :post.created | date }} by {{ post.firstname + ' ' + post.surname }}</small>
+      </div>
 
-        <b-card-title
-          :title="post.title">
-        </b-card-title>
+      <b-button v-if="!isPreview"
+        @click="goBack" 
+        variant="primary">
+          Return
+      </b-button>
+      <b-button v-if="isPreview"
+        @click="postDetail(post._id)" 
+        variant="primary"
+        class="mr-1"
+        size="sm">
+          View
+        <b-spinner v-if="isLoading.includes(post._id)" small></b-spinner>
+      </b-button>
+      <b-button v-if="isAdmin & viewType === 'card'"
+        @click="postEdit(post._id)" 
+        variant="success"
+        size="sm">
+          Edit
+        <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
+      </b-button>
+      <b-button v-if="isAdmin & viewType === 'card'"
+        @click="postDelete(post._id)" 
+        variant="danger"
+        class="mr-1 ml-1"
+        size="sm">
+          Delete
+        <b-spinner v-if="isLoading.includes(post.id & 'delete')" small></b-spinner>
+      </b-button>
+    </b-card>
 
-        <b-card-sub-title
-          class="mb-2"
-          :sub-title="post.description">
-        </b-card-sub-title>
-
-        <b-card-text v-if="!isPreview">
-          <p class="lineBreak">{{ post.content }}</p>
-        </b-card-text>
-
-        <div class="mt-3">
-        <b-button v-if="!isPreview"
-          @click="goBack" 
-          variant="primary">
-            Return
-        </b-button>
-
-        <b-button v-if="!isAdmin & isPreview"
-          @click="postDetail(post.id)" 
-          variant="primary"
-          size="sm">
-            View
-          <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
-        </b-button>
-
-        <b-button v-if="isAdmin"
-          @click="postEdit(post.id)" 
-          variant="success"
-          size="sm">
-            Edit
-          <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
-        </b-button>
-        </div>
-        
-        <div slot="footer">
-          <small class="text-muted">Last updated on {{ post.updated | date }} by {{ post.author }}</small>
-        </div>
-      </b-card>
+    <!-- List view-->
+    <b-card v-if="isPreview & viewType === 'list' " 
+      no-body 
+      class="overflow-hidden" 
+    >
+      <b-row align-v="center">
+        <b-col md="2">
+          <b-card-img 
+            :src="img432" 
+            class="rounded-0"
+          >
+          </b-card-img>
+        </b-col>
+        <b-col md="7">
+          <b-card-body :title="post.title">
+            <b-card-text>
+              {{ post.description }}
+            </b-card-text>
+              <div slot="footer">
+                <small class="text-muted">Updated on {{post.updated ?post.updated :post.created | date }} by {{ post.firstname + ' ' + post.surname }}</small>
+              </div>
+          </b-card-body>
+        </b-col>
+        <b-col  
+          md="3"
+          align-self="center"
+        >
+          <span class="float-right">
+            <b-button
+              @click="postDetail(post._id)" 
+              variant="primary"
+              class="mr-1"
+              size="sm">
+                View
+              <b-spinner v-if="isLoading.includes(post._id)" small></b-spinner>
+            </b-button>
+            <b-button v-if="isAdmin"
+              @click="postEdit(post._id)" 
+              variant="success"
+              size="sm">
+                Edit
+              <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
+            </b-button>
+            <b-button v-if="isAdmin"
+              @click="postDelete(post._id)" 
+              variant="danger"
+              class="mr-1 ml-1"
+              size="sm">
+                Delete
+              <b-spinner v-if="isLoading.includes(post.id & 'delete')" small></b-spinner>
+            </b-button>
+          </span>
+        </b-col>
+      </b-row>
+    </b-card>
+  </div>
 </template>
 
 <script>
@@ -69,6 +124,33 @@ export default {
       required: false
     }
   },
+  computed: {
+    viewType () {
+      return this.$store.getters.postsView
+    },
+    imgUrl () {
+      if (this.post.img_name) {
+        return process.env.baseURL +'/api/image/' + this.post.img_name
+      } else {
+        return ''
+      }
+    },
+    imgThumb () {
+      if (this.post.img_name) {
+        return process.env.baseURL +'/api/thumbnail/' + this.post.img_name
+      } else {
+        return ''
+      }
+    },
+    img432 () {
+      if (this.post.img_name) {
+        return process.env.baseURL +'/api/img432/' + this.post.img_name
+      } else {
+        return ''
+      }
+
+    }
+  },
   methods: {
     postDetail (id) {
       this.isLoading.push(id)
@@ -77,6 +159,14 @@ export default {
     postEdit (id) {
       this.isLoading.push(id)
       this.$router.push('admin/' + id)
+    },
+    postDelete (id) {
+      const isDelete = confirm('Permanently delete post "' + this.post.title + '"?')
+      if (isDelete) {
+        this.isLoading.push(id, 'delete')
+        const payload = {id: id, image: this.post.img_name}
+        this.$store.dispatch('deletePost', payload)
+      }
     },
     goBack () {
       this.$router.go(-1)
@@ -88,5 +178,9 @@ export default {
 <style scoped>
   .lineBreak {
     white-space: pre-wrap;
+  }
+  .draft {
+    font-style: italic;
+    font-weight: lighter;
   }
 </style>

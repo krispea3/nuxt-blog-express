@@ -43,7 +43,7 @@
         :disabled="$v.form.$invalid" 
         variant="success">
           Login
-        <b-spinner v-if="isLoading" small></b-spinner>
+        <b-spinner v-if="isLoading.includes('login')" small></b-spinner>
       </b-button>
       <b-button
         @click="$router.go(-1)">
@@ -60,8 +60,8 @@ export default {
   data () {
     return {
       form: {
-        firstName: '',
-        surName: '',
+        firstname: '',
+        surname: '',
         email: '',
         password: ''
       },
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     login () {
-      this.$store.dispatch('isLoading', true)
+      this.$store.dispatch('isLoading', 'login')
       this.$emit('login', this.form)
     }
   }

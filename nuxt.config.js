@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser')
 
 module.exports = {
   mode: 'universal',
@@ -53,7 +54,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.BASE_URL || 'https://nuxt-blog-9be94.firebaseio.com',
+    baseURL: process.env.NODE_ENV === 'development' ?'http://localhost:3000' :'https://nuxt-blog-express.herokuapp.com',
     credentials: false
   },
   /*
@@ -68,7 +69,8 @@ module.exports = {
   },
 
   env: {
-    FB_API_KEY: 'AIzaSyC7ItGWr8uZpRAHrGC8_qztVg8QxMulzZE'
+    FB_API_KEY: 'AIzaSyC7ItGWr8uZpRAHrGC8_qztVg8QxMulzZE',
+    baseURL: 'http://localhost:3000'
   },
 
   router: {
@@ -79,5 +81,12 @@ module.exports = {
     name: 'fade',
     mode: 'out-in'
   },
+
+  serverMiddleware: [
+    // will parse the req.body in node Express
+    bodyParser.json(),
+    // Path to the server. Will look for index.js in this path
+    '~/server/api'
+  ]
 
 }
