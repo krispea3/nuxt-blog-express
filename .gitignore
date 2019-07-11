@@ -91,3 +91,6 @@ sw.*
 
 # uploaded data from user
 # server/api/uploads
+
+# db config file
+server/db/.config
