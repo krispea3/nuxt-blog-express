@@ -93,4 +93,4 @@ sw.*
 # server/api/uploads
 
 # db config file
-server/db/.config
+.config.js
