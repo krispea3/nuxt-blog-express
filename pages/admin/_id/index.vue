@@ -2,6 +2,7 @@
   <PostForm 
     @onSave="onSave"
     @onDelete="onDelete"
+    @onRemoveImage="onRemoveImage"
     :post="loadedPost"
     :error="error" />
 </template>
@@ -57,6 +58,17 @@ export default {
     onDelete (image) {
       const payload = {id: +this.$route.params.id, image: image}
       this.$store.dispatch('deletePost', payload)
+        .then(() => {
+          this.$store.dispatch('isLoading', null)
+          this.$router.push('/admin')
+        })
+    },
+    onRemoveImage (image) {
+      const payload = {
+        image: image,
+        id: this.$route.params.id
+      }
+      this.$store.dispatch('removeImage', payload)
         .then(() => {
           this.$store.dispatch('isLoading', null)
           this.$router.push('/admin')
