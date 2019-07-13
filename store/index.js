@@ -224,6 +224,7 @@ export const actions = {
 
           delete formData['password']
           formData.idToken = data.token
+          formData._id = data.userid
           commit('setError', '') 
           commit('login', formData)
         })
