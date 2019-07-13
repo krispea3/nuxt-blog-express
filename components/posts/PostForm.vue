@@ -79,7 +79,7 @@
             label-for="input-img_original_name">
             <b-form-input
               id="input-img_original_name"
-              :value="imgOriginalName"
+              v-model="formData.img_original_name"
               readonly
             >
             </b-form-input>
@@ -218,11 +218,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
       isLoading () {
         return this.$store.getters.isLoading
       },
-      imgOriginalName () {
-        return this.post.img_original_name
-      },
       validImgSize () {
-        console.log(this.img_upload)
         if (this.img_upload === null) {
           return true
         }

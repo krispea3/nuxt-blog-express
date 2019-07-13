@@ -229,7 +229,6 @@ const addPost = (req, res, next) => {
     let dUri = new Datauri()
     dUri.format(req.file.originalname, req.file.buffer)
     cloudinary.uploader.upload(dUri.content, function(error, result) {
-      console.log('cloudinary result', result)
       if (!error) {
         req.file.filename = result.public_id
         req.file.img_url = result.url
