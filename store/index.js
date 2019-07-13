@@ -20,6 +20,13 @@ export const mutations = {
     const index = state.posts.findIndex(i => i._id === post._id)
     state.posts[index] = post
   },
+  removeImageInPost (state, id) {
+    const index = state.posts.findIndex(i => i._id == id)
+    state.posts[index].img_url = ''
+    state.posts[index].img_name = ''
+    state.posts[index].img_original_name = ''
+    state.posts[index].img_alt = ''
+  },
   updatePostAuthor (state, user) {
     state.posts.forEach(e => {
       if (e.userid === user._id) {
@@ -109,6 +116,7 @@ export const actions = {
         .then((data) => {
           formData._id = data.post.id
           formData.created = data.post.created
+          formData.img_url = data.file.url
           formData.img_name = data.file.name
           formData.img_original_name = data.file.originalName
           commit('setError', '')
@@ -128,6 +136,7 @@ export const actions = {
     form.append('title', formData.title)
     form.append('description', formData.description)
     form.append('content', formData.content)
+    form.append('img_url', formData.img_url)
     form.append('img_name', formData.img_name)
     form.append('img_original_name', formData.img_original_name)
     form.append('img_upload', img_upload)
@@ -140,10 +149,11 @@ export const actions = {
       this.$axios.$put('/api/post/' + formData._id, form)
         .then((data) => {
           // Delete old image when image updated
-          if (img_upload != null & formData.img_name != '') {
-            dispatch('deleteImages', formData.img_name)
-          }
+          // if (img_upload != null & formData.img_name != '') {
+          //   dispatch('deleteImages', formData.img_name)
+          // }
           formData.updated = data.post.updated
+          formData.img_url = data.file.url
           formData.img_name = data.file.name
           formData.img_original_name = data.file.originalName
           commit('setError', '')
@@ -157,27 +167,36 @@ export const actions = {
   },
   deletePost ({ commit, dispatch }, payload) {
       // Delete post
-      return this.$axios.$delete('/api/post/' + payload.id)
+      return this.$axios.$delete('/api/post/' + payload.id + '?image=' + payload.image)
       .then(() => {
         commit('setError', '')
         commit('deletePostInPosts', payload.id)
-        if (payload.image !== '') {
-          dispatch('deleteImages', payload.image)
-        }
+        // if (payload.image !== '') {
+        //   dispatch('deleteImages', payload.image)
+        // }
       })
       .catch(err => {
         commit('setError', 'Error deleting the post. Try again later')
         console.error(err)
       })
   },
-  deleteImages (context, imageName) {
-    this.$axios.$delete('/api/image/' + imageName)
+  // deleteImages (context, imageName) {
+  //   this.$axios.$delete('/api/image/' + imageName)
+  //     .then(() => {
+  //       console.log('File deleted')
+  //     })
+  //     .catch(err => {
+  //       console.error(err.response)
+  //     })
+  // },
+  removeImage ({ commit }, payload) {
+    let form = new FormData()
+    form.append('image', payload.image)
+    return this.$axios.put('/api/image/' + payload.id, form)
       .then(() => {
-        console.log('File deleted')
+        commit('removeImageInPost', payload.id)
       })
-      .catch(err => {
-        console.error(err.response)
-      })
+      .catch(err => console.log(err))
   },
   setPostsView ({ commit }, viewType) {
     commit('setPostsView', viewType)

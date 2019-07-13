@@ -4,7 +4,7 @@
     <b-card v-if="!isPreview | viewType === 'card'"
       class="text-center flex-fill mb-2 mr-1" 
       :class="{draft: post.draft}"
-      :img-src="img432"
+      :img-src="post.img_url"
       img-top
       :alt="post.imgalt"
       :title="post.title"
@@ -56,7 +56,7 @@
       <b-row align-v="center">
         <b-col md="2">
           <b-card-img 
-            :src="img432" 
+            :src="post.img_url" 
             class="rounded-0"
           >
           </b-card-img>
@@ -128,28 +128,28 @@ export default {
     viewType () {
       return this.$store.getters.postsView
     },
-    imgUrl () {
-      if (this.post.img_name) {
-        return process.env.baseURL +'/api/image/' + this.post.img_name
-      } else {
-        return ''
-      }
-    },
-    imgThumb () {
-      if (this.post.img_name) {
-        return process.env.baseURL +'/api/thumbnail/' + this.post.img_name
-      } else {
-        return ''
-      }
-    },
-    img432 () {
-      if (this.post.img_name) {
-        return process.env.baseURL +'/api/img432/' + this.post.img_name
-      } else {
-        return ''
-      }
+    // imgUrl () {
+    //   if (this.post.img_name) {
+    //     return process.env.baseURL +'/api/image/' + this.post.img_name
+    //   } else {
+    //     return ''
+    //   }
+    // },
+    // imgThumb () {
+    //   if (this.post.img_name) {
+    //     return process.env.baseURL +'/api/thumbnail/' + this.post.img_name
+    //   } else {
+    //     return ''
+    //   }
+    // },
+    // img432 () {
+    //   if (this.post.img_name) {
+    //     return process.env.baseURL +'/api/img432/' + this.post.img_name
+    //   } else {
+    //     return ''
+    //   }
 
-    }
+    // }
   },
   methods: {
     postDetail (id) {

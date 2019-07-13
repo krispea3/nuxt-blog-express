@@ -40,7 +40,7 @@
         id="input-group-content"
         label="Content"
         label-for="input-content">
-        <b-form-textarea :class="$v.formData.content.$error"
+        <b-form-textarea :class="{invalid: $v.formData.content.$error}"
           id="input-content"
           v-model="formData.content"
           rows="5"
@@ -55,16 +55,48 @@
       <b-form-group
         id="input-group-img_upload"
         label="Upload image"
-        label-for="input-img_upload">
-        <b-form-file
+        label-for="input-img_upload"
+        description="Maximum size 5MB">
+        <b-form-file :class="{invalid: !validImgSize}"
           id="input-img_upload"
+          accept="image/*"
           v-model="img_upload"
           placeholder="Choose a file..."
           drop-placeholder="Drop file here..."
         >
         </b-form-file>
-        <p :style="{color: 'green'}" v-if="formData.img_original_name != ''">Uploaded image: {{ formData.img_original_name }}</p>
+          <div v-if="!validImgSize">
+            <span class="error">File is greater than 5MB</span>
+          </div>
+
       </b-form-group>
+      <!-- Uploaded image -->
+      <b-row v-if="formData.img_original_name != ''">
+        <b-col md="4">
+          <b-form-group
+            id="input-group-img_original_name"
+            label="Uploaded image"
+            label-for="input-img_original_name">
+            <b-form-input
+              id="input-img_original_name"
+              :value="imgOriginalName"
+              readonly
+            >
+            </b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col align-self="center" md="2">
+          <b-button 
+            @click="removeImage" 
+            class="mt-3" 
+            size="sm" 
+            variant="danger"
+          >
+            Remove
+            <b-spinner v-if="isLoading.includes('remove')" small></b-spinner>
+          </b-button>
+        </b-col>
+      </b-row>
 
       <!-- Image Alt -->
       <b-form-group
@@ -115,6 +147,7 @@
 </template>
 
 <script>
+
 import { required, maxLength } from 'vuelidate/lib/validators'
 
   export default {
@@ -123,6 +156,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
         this.formData.title = this.post.title
         this.formData.description = this.post.description
         this.formData.content = this.post.content
+        this.formData.img_url = this.post.img_url
         this.formData.img_name = this.post.img_name
         this.formData.img_original_name = this.post.img_original_name
         this.img_upload = null
@@ -143,6 +177,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
           title: '',
           description: '',
           content: '',
+          img_url: '',
           img_name: '',
           img_original_name: '',
           imgalt: '',
@@ -182,22 +217,39 @@ import { required, maxLength } from 'vuelidate/lib/validators'
     computed: {
       isLoading () {
         return this.$store.getters.isLoading
+      },
+      imgOriginalName () {
+        return this.post.img_original_name
+      },
+      validImgSize () {
+        console.log(this.img_upload)
+        if (this.img_upload === null) {
+          return true
+        }
+        if (this.img_upload.size > 5242880) {
+          return false
+        } else {
+          return true
+        }
       }
     },
     methods: {
       saveForm () {
-        this.$store.dispatch('isLoading', 'save')
-        const payload = {
-          formData: this.formData,
-          img_upload: this.img_upload
+        if (this.validImgSize) {
+          this.$store.dispatch('isLoading', 'save')
+          const payload = {
+            formData: this.formData,
+            img_upload: this.img_upload
+          }
+          this.$emit('onSave', payload)
         }
-        this.$emit('onSave', payload)
       },
       onReset(evt) {
         evt.preventDefault()
         // Reset our form values
         this.formData.text = ''
         this.formData.content = ''
+        this.formData.img_url = ''
         this.formData.img_name = ''
         this.formData.img_original_name = ''
         this.formData.imgalt = ''
@@ -211,12 +263,12 @@ import { required, maxLength } from 'vuelidate/lib/validators'
       deletePost () {
         this.$store.dispatch('isLoading', 'delete')
         this.$emit('onDelete', this.formData.img_name)
+      },
+      removeImage () {
+        this.$store.dispatch('isLoading', 'remove')
+        this.$emit('onRemoveImage', this.formData.img_name)
       }
     }
-      // onSubmit(evt) {
-      //   evt.preventDefault()
-        // alert(JSON.stringify(this.form))
-      // },
   }
 </script>
 
