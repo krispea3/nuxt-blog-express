@@ -359,7 +359,6 @@ const deletePost = (req, res, next) => {
 }
 
 const removeImage = (req, res, next) => {
-  console.log(req.body)
   // Delete image on cloudinary
   cloudinary.uploader.destroy(req.body.image, function(result) {
     const image = {

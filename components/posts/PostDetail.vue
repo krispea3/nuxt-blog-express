@@ -29,14 +29,14 @@
         class="mr-1"
         size="sm">
           View
-        <b-spinner v-if="isLoading.includes(post._id)" small></b-spinner>
+        <b-spinner v-if="spin('view')" small></b-spinner>
       </b-button>
       <b-button v-if="isAdmin & viewType === 'card'"
         @click="postEdit(post._id)" 
         variant="success"
         size="sm">
           Edit
-        <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
+        <b-spinner v-if="spin('edit')" small></b-spinner>
       </b-button>
       <b-button v-if="isAdmin & viewType === 'card'"
         @click="postDelete(post._id)" 
@@ -44,7 +44,7 @@
         class="mr-1 ml-1"
         size="sm">
           Delete
-        <b-spinner v-if="isLoading.includes(post.id & 'delete')" small></b-spinner>
+        <b-spinner v-if="spin('delete')" small></b-spinner>
       </b-button>
     </b-card>
 
@@ -82,14 +82,14 @@
               class="mr-1"
               size="sm">
                 View
-              <b-spinner v-if="isLoading.includes(post._id)" small></b-spinner>
+              <b-spinner v-if="spin('view')" small></b-spinner>
             </b-button>
             <b-button v-if="isAdmin"
               @click="postEdit(post._id)" 
               variant="success"
               size="sm">
                 Edit
-              <b-spinner v-if="isLoading.includes(post.id)" small></b-spinner>
+              <b-spinner v-if="spin('edit')" small></b-spinner>
             </b-button>
             <b-button v-if="isAdmin"
               @click="postDelete(post._id)" 
@@ -97,7 +97,7 @@
               class="mr-1 ml-1"
               size="sm">
                 Delete
-              <b-spinner v-if="isLoading.includes(post.id & 'delete')" small></b-spinner>
+              <b-spinner v-if="spin('delete')" small></b-spinner>
             </b-button>
           </span>
         </b-col>
@@ -128,40 +128,24 @@ export default {
     viewType () {
       return this.$store.getters.postsView
     },
-    // imgUrl () {
-    //   if (this.post.img_name) {
-    //     return process.env.baseURL +'/api/image/' + this.post.img_name
-    //   } else {
-    //     return ''
-    //   }
-    // },
-    // imgThumb () {
-    //   if (this.post.img_name) {
-    //     return process.env.baseURL +'/api/thumbnail/' + this.post.img_name
-    //   } else {
-    //     return ''
-    //   }
-    // },
-    // img432 () {
-    //   if (this.post.img_name) {
-    //     return process.env.baseURL +'/api/img432/' + this.post.img_name
-    //   } else {
-    //     return ''
-    //   }
-
-    // }
   },
   methods: {
+    spin(method) {
+      return this.isLoading.includes(method) && this.isLoading.includes(this.post._id)
+    },
     postDetail (id) {
-      this.isLoading.push(id)
+      this.isLoading.push(id, 'view')
       this.$router.push('posts/' + id)
     },
     postEdit (id) {
-      this.isLoading.push(id)
+      this.isLoading.push(id, 'edit')
       this.$router.push('admin/' + id)
     },
     postDelete (id) {
       const isDelete = confirm('Permanently delete post "' + this.post.title + '"?')
+      console.log('delete: ', this.isLoading.includes(id) & this.isLoading.includes('delete'))
+      console.log('view: ', this.isLoading.includes(id) & this.isLoading.includes('view'))
+
       if (isDelete) {
         this.isLoading.push(id, 'delete')
         const payload = {id: id, image: this.post.img_name}

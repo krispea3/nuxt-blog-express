@@ -71,7 +71,8 @@ export default {
       this.$store.dispatch('removeImage', payload)
         .then(() => {
           this.$store.dispatch('isLoading', null)
-          this.$router.push('/admin')
+          // this.$router.push('/admin')
+          this.$router.go()
         })
     }
   },
