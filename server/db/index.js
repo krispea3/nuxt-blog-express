@@ -231,7 +231,7 @@ const addPost = (req, res, next) => {
     cloudinary.uploader.upload(dUri.content, function(error, result) {
       if (!error) {
         req.file.filename = result.public_id
-        req.file.img_url = result.url
+        req.file.img_url = result.secure_url
         db.one('INSERT INTO posts(title, description, content, img_url, img_name, img_original_name, imgalt, draft, published, userid) VALUES(${body.title}, ${body.description}, ${body.content}, ${file.img_url}, ${file.filename}, ${file.originalname}, ${body.imgalt}, ${body.draft}, ${body.published}, ${body.userid}) RETURNING _id, created', req)
           .then((data) => {
             return (
@@ -288,7 +288,7 @@ const updatePost = (req, res, next) => {
     dUri.format(req.file.originalname, req.file.buffer)
     cloudinary.uploader.upload(dUri.content, function(error, result) {
       if (!error) {
-        req.file.img_url = result.url
+        req.file.img_url = result.secure_url
         req.file.filename = result.public_id
         db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, img_url=${file.img_url}, img_name=${file.filename}, img_original_name=${file.originalname}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published}, updated=${body.updated} WHERE _id=${params.id}', req)
           .then(() => {
@@ -309,7 +309,6 @@ const updatePost = (req, res, next) => {
     })    
     // resizeImage(req.file.path, req.file.filename)
   } else {
-    console.log(req.body)
     db.none('UPDATE posts SET title=${body.title}, description=${body.description}, content=${body.content}, imgalt=${body.imgalt}, draft=${body.draft}, published=${body.published}, updated=${body.updated} WHERE _id=${params.id}', req)
     .then(() => {
       res.status(202).json({
@@ -327,7 +326,6 @@ const updatePost = (req, res, next) => {
 }
 
 const deletePost = (req, res, next) => {
-  console.log(req.query.image)
   if (req.query.image != '') {
     // Delete image on cloudinary
     cloudinary.uploader.destroy(req.query.image, function(result) {
